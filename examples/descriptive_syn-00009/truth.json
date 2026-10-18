@@ -1,0 +1,244 @@
+{
+  "id": "syn-00009",
+  "scenario": "retail_night_fill",
+  "award": "MA000004",
+  "classification": "retail_employee_level_1",
+  "employment": "casual",
+  "shiftworker": true,
+  "shifts": [
+    {
+      "start": "2026-12-15T22:00:00",
+      "end": "2026-12-16T04:00:00",
+      "unpaid_breaks": [],
+      "long_day": false
+    },
+    {
+      "start": "2026-12-18T22:00:00",
+      "end": "2026-12-19T04:00:00",
+      "unpaid_breaks": [],
+      "long_day": false
+    },
+    {
+      "start": "2026-12-19T22:00:00",
+      "end": "2026-12-20T04:00:00",
+      "unpaid_breaks": [],
+      "long_day": false
+    },
+    {
+      "start": "2026-12-20T22:00:00",
+      "end": "2026-12-21T06:00:00",
+      "unpaid_breaks": [],
+      "long_day": false
+    }
+  ],
+  "payslip": {
+    "employer_name": "Westgate Food Market Pty Ltd",
+    "employer_abn": "90 463 899 882",
+    "employee_name": "Yuki Iyer",
+    "employee_id": "851656",
+    "job_title": "Night Fill Team Member",
+    "classification_label": "Retail Employee Level 1",
+    "employment_type": "Casual",
+    "award_named": "General Retail Industry Award 2020",
+    "period_start": "2026-12-14",
+    "period_end": "2026-12-20",
+    "pay_date": "2026-12-25",
+    "lines": [
+      {
+        "code": "",
+        "description": "Ordinary hours",
+        "hours": "26.00",
+        "rate": "34.76",
+        "amount": "903.76",
+        "band": "ordinary"
+      }
+    ],
+    "gross": "903.76",
+    "tax": "153.64",
+    "net": "750.12",
+    "super_amount": "108.45",
+    "style": "descriptive"
+  },
+  "expected_gross": "1229.28",
+  "paid_gross": "903.76",
+  "shortfall": "325.52",
+  "errors": [
+    {
+      "kind": "flat_rate",
+      "detail": "All hours paid at the ordinary rate",
+      "dates": [
+        "2026-12-15",
+        "2026-12-16",
+        "2026-12-18",
+        "2026-12-19",
+        "2026-12-20",
+        "2026-12-21"
+      ],
+      "shortfall": "325.52"
+    }
+  ],
+  "expected_lines": [
+    {
+      "shift": 0,
+      "date": "2026-12-15",
+      "band": "shiftwork_weekday",
+      "true_band": "shiftwork_weekday",
+      "minutes": 120,
+      "percent": "155",
+      "rate": "43.11",
+      "amount": "86.22"
+    },
+    {
+      "shift": 0,
+      "date": "2026-12-16",
+      "band": "shiftwork_weekday",
+      "true_band": "shiftwork_weekday",
+      "minutes": 240,
+      "percent": "155",
+      "rate": "43.11",
+      "amount": "172.44"
+    },
+    {
+      "shift": 1,
+      "date": "2026-12-18",
+      "band": "shiftwork_weekday",
+      "true_band": "shiftwork_weekday",
+      "minutes": 120,
+      "percent": "155",
+      "rate": "43.11",
+      "amount": "86.22"
+    },
+    {
+      "shift": 1,
+      "date": "2026-12-19",
+      "band": "shiftwork_saturday",
+      "true_band": "shiftwork_saturday",
+      "minutes": 240,
+      "percent": "175",
+      "rate": "48.67",
+      "amount": "194.68"
+    },
+    {
+      "shift": 2,
+      "date": "2026-12-19",
+      "band": "shiftwork_saturday",
+      "true_band": "shiftwork_saturday",
+      "minutes": 120,
+      "percent": "175",
+      "rate": "48.67",
+      "amount": "97.34"
+    },
+    {
+      "shift": 2,
+      "date": "2026-12-20",
+      "band": "shiftwork_sunday",
+      "true_band": "shiftwork_sunday",
+      "minutes": 240,
+      "percent": "200",
+      "rate": "55.62",
+      "amount": "222.48"
+    },
+    {
+      "shift": 3,
+      "date": "2026-12-20",
+      "band": "shiftwork_sunday",
+      "true_band": "shiftwork_sunday",
+      "minutes": 120,
+      "percent": "200",
+      "rate": "55.62",
+      "amount": "111.24"
+    },
+    {
+      "shift": 3,
+      "date": "2026-12-21",
+      "band": "shiftwork_weekday",
+      "true_band": "shiftwork_weekday",
+      "minutes": 360,
+      "percent": "155",
+      "rate": "43.11",
+      "amount": "258.66"
+    }
+  ],
+  "paid_lines": [
+    {
+      "shift": 0,
+      "date": "2026-12-15",
+      "band": "ordinary",
+      "true_band": "shiftwork_weekday",
+      "minutes": 120,
+      "percent": "125",
+      "rate": "34.76",
+      "amount": "69.52"
+    },
+    {
+      "shift": 0,
+      "date": "2026-12-16",
+      "band": "ordinary",
+      "true_band": "shiftwork_weekday",
+      "minutes": 240,
+      "percent": "125",
+      "rate": "34.76",
+      "amount": "139.04"
+    },
+    {
+      "shift": 1,
+      "date": "2026-12-18",
+      "band": "ordinary",
+      "true_band": "shiftwork_weekday",
+      "minutes": 120,
+      "percent": "125",
+      "rate": "34.76",
+      "amount": "69.52"
+    },
+    {
+      "shift": 1,
+      "date": "2026-12-19",
+      "band": "ordinary",
+      "true_band": "shiftwork_saturday",
+      "minutes": 240,
+      "percent": "125",
+      "rate": "34.76",
+      "amount": "139.04"
+    },
+    {
+      "shift": 2,
+      "date": "2026-12-19",
+      "band": "ordinary",
+      "true_band": "shiftwork_saturday",
+      "minutes": 120,
+      "percent": "125",
+      "rate": "34.76",
+      "amount": "69.52"
+    },
+    {
+      "shift": 2,
+      "date": "2026-12-20",
+      "band": "ordinary",
+      "true_band": "shiftwork_sunday",
+      "minutes": 240,
+      "percent": "125",
+      "rate": "34.76",
+      "amount": "139.04"
+    },
+    {
+      "shift": 3,
+      "date": "2026-12-20",
+      "band": "ordinary",
+      "true_band": "shiftwork_sunday",
+      "minutes": 120,
+      "percent": "125",
+      "rate": "34.76",
+      "amount": "69.52"
+    },
+    {
+      "shift": 3,
+      "date": "2026-12-21",
+      "band": "ordinary",
+      "true_band": "shiftwork_weekday",
+      "minutes": 360,
+      "percent": "125",
+      "rate": "34.76",
+      "amount": "208.56"
+    }
+  ]
+}

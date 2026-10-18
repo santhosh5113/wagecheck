@@ -1,0 +1,118 @@
+# Hospitality Industry (General) Award 2020 [MA000009] — rule pack, GENERAL STREAM ONLY
+# Percentages and dollar figures from the FWC MAPD API (pay-rates, penalties, wage-allowances) for rates
+# in force on 2026-10-18 (operative 1 July 2026), using the "Adult full-time and part-time employees" and
+# "Adult casual employees" penalty rows. Casino gaming and hotel managerial streams are NOT modelled.
+# Daily hour limits and minimum engagements from the FWC consolidated award text.
+instrument_id: MA000009
+instrument_type: modern_award
+title: Hospitality Industry (General) Award 2020
+effective_from: 2026-07-01
+verified_on: 2026-10-18
+timezone: Australia/Sydney
+sources:
+  - title: "FWC MAPD API /awards/MA000009/pay-rates, /penalties, /wage-allowances (2026-10-18)"
+    url: "https://api.fwc.gov.au/api/v1/awards/MA000009"
+  - title: "FWC consolidated award text MA000009 (cl 11.2, 11.3, 15.1, 15.2)"
+    url: "https://awards.fairwork.gov.au/MA000009.html"
+
+# Minimum rates (cl 18), adult hourly, general stream. MAPD numbers grades 1-7 from Introductory.
+# The same names also exist in the casino gaming stream at higher rates; each figure below is confirmed by
+# MAPD's "Adult full-time and part-time employees — Ordinary hours" penalty row for that level.
+# mapd_parent values are MAPD's parent_classification_name for the general stream (checked 2026-10-18).
+classifications:
+  # mapd_fixed_id = MAPD classification_fixed_id (general stream), checked 2026-10-18. Introductory needs it:
+  # the general (id 242) and casino (id 292) Introductory levels share a name and have no parent.
+  hospitality_introductory: {mapd_fixed_id: 242, mapd_level: 1, mapd_name: "Introductory level", hourly: "25.74",
+                             clause: "18"}
+  hospitality_level_1:
+    mapd_fixed_id: 243
+    mapd_level: 2
+    mapd_name: "Level 1"
+    mapd_parent: "Food and beverage attendant grade 1; Guest service grade 1; Kitchen attendant grade 1"
+    hourly: "26.44"
+    clause: "18"
+  hospitality_level_2:
+    mapd_fixed_id: 246
+    mapd_level: 3
+    mapd_name: "Level 2"
+    mapd_parent: "Clerical grade 1; Cook grade 1; Door person/security officer grade 1; Food and beverage attendant grade 2; Front office grade 1; Gardener grade 1; Guest service grade 2; Kitchen attendant grade 2; Leisure attendant grade 1; Storeperson grade 1"
+    hourly: "27.08"
+    clause: "18"
+  hospitality_level_3:
+    mapd_fixed_id: 257
+    mapd_level: 4
+    mapd_name: "Level 3"
+    mapd_parent: "Clerical grade 2; Cook grade 2; Food and beverage attendant grade 3; Fork-lift driver; Front office grade 2; Gardener grade 2; Guest service grade 3; Handyperson; Kitchen attendant grade 3; Leisure attendant grade 2; Storeperson grade 2; Timekeeper/security officer grade 2"
+    hourly: "27.97"
+    clause: "18"
+  hospitality_level_4:
+    mapd_fixed_id: 268
+    mapd_level: 5
+    mapd_name: "Level 4"
+    mapd_parent: "Clerical grade 3; Cook (tradesperson) grade 3; Food and beverage attendant (tradesperson) grade 4; Front office grade 3; Gardener grade 3 (tradesperson); Guest service grade 4; Leisure attendant grade 3; Storeperson grade 3"
+    hourly: "29.45"
+    clause: "18"
+  hospitality_level_5:
+    mapd_fixed_id: 276
+    mapd_level: 6
+    mapd_name: "Level 5"
+    mapd_parent: "Clerical supervisor; Cook (tradesperson) grade 4; Food and beverage supervisor; Front office supervisor; Gardener grade 4 (tradesperson); Guest service supervisor"
+    hourly: "31.30"
+    clause: "18"
+  hospitality_level_6:
+    mapd_fixed_id: 282
+    mapd_level: 7
+    mapd_name: "Level 6"
+    mapd_parent: "Cook (tradesperson) grade 5"
+    hourly: "32.13"
+    clause: "18"
+
+casual_loading_pct: 25
+casual_loading_clause: "11.1"
+
+min_engagement:
+  casual_hours: 2       # cl 11.3
+  casual_clause: "11.3"
+  part_time_hours: 3    # cl 15.2(a): minimum 3 ordinary hours on any day
+  part_time_clause: "15.2(a)"
+
+# Table 14 — Penalty rates (cl 29.2). Casual percentages include the casual loading.
+# Monday to Friday evening/night work adds a flat amount per hour or part of an hour (MAPD wage allowances).
+ordinary: {ft_pt: 100, casual: 125, clause: "29.2 Table 14"}
+time_bands:
+  - {name: public_holiday, days: [public_holiday], rate: {ft_pt: 225, casual: 250, clause: "29.2 Table 14"}}
+  - {name: sunday, days: [sunday], rate: {ft_pt: 150, casual: 175, clause: "29.2 Table 14"}}
+  - {name: saturday, days: [saturday], rate: {ft_pt: 125, casual: 150, clause: "29.2 Table 14"}}
+  - name: evening_7pm_to_midnight
+    days: [weekday]
+    start: "19:00"
+    rate: {ft_pt: 100, casual: 125, flat_per_hour: "2.95", flat_per_part_hour: true, clause: "29.2 Table 14"}
+  - name: night_midnight_to_7am
+    days: [weekday]
+    end: "07:00"
+    rate: {ft_pt: 100, casual: 125, flat_per_hour: "4.42", flat_per_part_hour: true, clause: "29.2 Table 14"}
+
+# Table 13 — Overtime (cl 28.4). MAPD applies the same percentages to casuals (no casual loading) except on
+# public holidays, where casual overtime is 250%.
+overtime:
+  trigger_clause: "10.13(b), 11.4, 28.2"
+  daily_max_hours: 11.5          # cl 15.1(c)(ii), 15.2(b)
+  long_day_max_hours: 11.5
+  casual_daily_max_hours: 12     # cl 11.2(a)
+  first_hours: 2
+  mon_sat_first: {ft_pt: 150, casual: 150, loading_exception: true, clause: "28.4 Table 13"}
+  mon_sat_after: {ft_pt: 200, casual: 200, loading_exception: true, clause: "28.4 Table 13"}
+  saturday_first: {ft_pt: 200, casual: 200, loading_exception: true, clause: "28.4 Table 13 (weekends)"}
+  saturday_after: {ft_pt: 200, casual: 200, loading_exception: true, clause: "28.4 Table 13 (weekends)"}
+  sunday: {ft_pt: 200, casual: 200, loading_exception: true, clause: "28.4 Table 13 (weekends)"}
+  public_holiday: {ft_pt: 225, casual: 250, clause: "28.4 Table 13"}
+
+known_gaps:
+  - "General stream only: casino gaming employees (separate higher rates) and hotel managerial staff are
+    not modelled."
+  - "MAPD 'loaded rates' (110.2%-131.05% annualised arrangements) are not modelled."
+  - "Junior and apprentice rates not modelled."
+  - "Weekly overtime (38 hours/week averaged), rostered-day-off and outside-roster triggers not modelled;
+    daily limits only."
+  - "Split shift allowances ($3.69 / $5.60 per day, cl 26.14) and other allowances not modelled."
+  - "'Per hour or part thereof' evening/night amounts are applied per band per day in each shift."

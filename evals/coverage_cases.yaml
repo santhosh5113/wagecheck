@@ -1,0 +1,50 @@
+# Hand-labelled coverage cases (synthetic, written for this project, no real people).
+# expected = award code or agreement id. Used by scripts/eval_coverage.py and the test suite.
+cases:
+  - {job: night fill, place: independent supermarket, employer: Harbour Fresh Grocers, expected: MA000004}
+  - {job: checkout operator, place: supermarket, employer: Bayside IGA, expected: MA000004}
+  - {job: sales assistant, place: clothing store, employer: Thread Lane Pty Ltd, expected: MA000004}
+  - {job: retail assistant, place: hardware store, employer: Northside Hardware, expected: MA000004}
+  - {job: store team member, place: discount store, employer: Bargain Barn, expected: MA000004}
+  - {job: crew member, place: burger takeaway, employer: Grill Stack Pty Ltd, expected: MA000003}
+  - {job: delivery driver, place: pizza store, employer: Slice Express, expected: MA000003}
+  - {job: crew, place: food court kebab shop, employer: Kebab Corner, expected: MA000003}
+  - {job: barista, place: cafe, employer: Little Bean Cafe, expected: MA000119}
+  - {job: waiter, place: sit down restaurant, employer: Spice Route Dining, expected: MA000119}
+  - {job: kitchen hand, place: restaurant, employer: Olive and Thyme, expected: MA000119}
+  - {job: bartender, place: pub, employer: The Royal Oak Hotel, expected: MA000009}
+  - {job: room attendant, place: hotel, employer: Harbourview Hotel, expected: MA000009}
+  - {job: gaming attendant, place: casino, employer: Star City Venue, expected: MA000009}
+  - {job: cleaner, place: commercial cleaning company, employer: Sparkle Office Cleaning, expected: MA000022}
+  - {job: office cleaner, place: contract cleaning, employer: BrightWorks Cleaning, expected: MA000022}
+  - {job: pick packer, place: distribution centre, employer: FastShip Logistics, expected: MA000084}
+  - {job: forklift driver, place: warehouse, employer: Westside Wholesale, expected: MA000084}
+  - {job: pharmacy assistant, place: community pharmacy, employer: Corner Chemist, expected: MA000012}
+  - {job: barber, place: barber shop, employer: Fade Factory, expected: MA000005}
+  - {job: nail technician, place: nail salon, employer: Polished Nails, expected: MA000005}
+  - {job: security guard, place: security company, employer: SafeWatch Security, expected: MA000016}
+  - {job: personal care worker, place: residential aged care, employer: Sunrise Aged Care, expected: MA000018}
+  - {job: disability support worker, place: ndis provider, employer: Able Futures, expected: MA000100}
+  - {job: fruit picker, place: orchard, employer: Valley Orchards, expected: MA000028}
+  - {job: harvest worker, place: berry farm, employer: Red Hill Berries, expected: MA000028}
+  - {job: butcher, place: butcher shop, employer: Prime Cuts Butchery, expected: MA000059}
+  # Enterprise agreement cases: registry match wins over the award ranking
+  - {job: night fill, place: supermarket, employer: Coles Supermarkets Australia Pty Ltd, expected: coles-retail-ea-2024}
+  - {job: checkout, place: supermarket, employer: Coles, expected: coles-retail-ea-2024}
+  - {job: night fill, place: supermarket, employer: "", abn: "45 004 189 708", expected: coles-retail-ea-2024}
+
+# Held-out cases: written AFTER the term lists were frozen, using everyday wording and slang.
+# Report these separately; they measure generalisation, the dev cases above do not.
+held_out:
+  - {job: shelf stacker, place: grocery, employer: Fresh Mart, expected: MA000004}
+  - {job: team member, place: variety store, employer: Two Dollar Plus, expected: MA000004}
+  - {job: dishie, place: thai place, employer: Bangkok Bites, expected: MA000119}
+  - {job: front of house, place: brunch spot, employer: Sunday Eggs, expected: MA000119}
+  - {job: drink runner, place: rooftop bar, employer: Skyline Bar, expected: MA000009}
+  - {job: housekeeping, place: hostel, employer: Backpacker Base, expected: MA000009}
+  - {job: rider, place: burger joint, employer: Burger Bros, expected: MA000003}
+  - {job: storeperson, place: wholesale supplier, employer: Trade Supplies Direct, expected: MA000084}
+  - {job: carer, place: nursing home, employer: Gumtree Lodge, expected: MA000018}
+  - {job: support worker, place: group home, employer: Pathways Living, expected: MA000100}
+  - {job: packer, place: packing shed, employer: Sunraysia Citrus, expected: MA000028}
+  - {job: crowd controller, place: nightclub, employer: Guardline Services, expected: MA000016}

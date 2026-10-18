@@ -1,0 +1,95 @@
+# Award coverage profiles for the awards most migrant workers and international students work under.
+# Codes and titles checked against the FWO list of awards (2026-10-18).
+# industry/occupation terms are curated summaries of each award's coverage clause, used by the
+# baseline ranker. Phase 4 replaces them with retrieval over the real coverage-clause text.
+# `excludes` are terms that point to a different award (e.g. retail cl 4.2 excludes fast food).
+awards:
+  - code: MA000004
+    title: General Retail Industry Award 2020
+    industry: [retail, shop, store, supermarket, grocery, department store, clothing store, newsagency,
+               bakery shop, hardware store, liquor store, bottle shop, convenience store, electronics store,
+               discount store, bookstore, homewares]
+    occupation: [sales assistant, checkout, cashier, shelf filler, night fill, nightfill, stocker,
+                 replenishment, retail assistant, customer service, store team member, loss prevention,
+                 visual merchandiser, department manager, retail employee]
+    excludes: [fast food, takeaway, pharmacy, hair, beauty salon, butcher, nursery, warehouse,
+               distribution centre, restaurant, cafe, hotel, service station, car dealership]
+
+  - code: MA000003
+    title: Fast Food Industry Award 2010
+    industry: [fast food, takeaway, quick service restaurant, pizza, burger, food court, drive thru,
+               kebab, fried chicken, delivery]
+    occupation: [crew member, crew, cook, kitchen hand, delivery driver, pizza maker, front counter,
+                 drive thru operator, shift manager, fast food employee]
+    excludes: [table service, sit down restaurant, fine dining]
+
+  - code: MA000009
+    title: Hospitality Industry (General) Award 2020
+    industry: [hotel, motel, pub, bar, tavern, casino, resort, accommodation, nightclub, function centre,
+               serviced apartments]
+    occupation: [bartender, bar attendant, room attendant, housekeeper, porter, front office, receptionist,
+                 gaming attendant, food and beverage attendant, glassie]
+    excludes: []
+
+  - code: MA000119
+    title: Restaurant Industry Award 2020
+    industry: [restaurant, cafe, coffee shop, bistro, catering, dine in, brunch]
+    occupation: [waiter, waitress, barista, chef, cook, kitchen hand, food and beverage attendant,
+                 dishwasher, floor staff]
+    excludes: [takeaway, fast food, hotel, pub]
+
+  - code: MA000022
+    title: Cleaning Services Award 2020
+    industry: [cleaning company, contract cleaning, commercial cleaning, office cleaning, cleaning services]
+    occupation: [cleaner, commercial cleaner, window cleaner, carpet cleaner, cleaning supervisor]
+    excludes: [hotel, housekeeping, hospital]
+
+  - code: MA000084
+    title: Storage Services and Wholesale Award 2020
+    industry: [warehouse, distribution centre, wholesale, logistics, storage, cold storage, fulfilment centre]
+    occupation: [storeworker, pick packer, picker, packer, forklift driver, warehouse worker, order picker,
+                 dispatch]
+    excludes: []
+
+  - code: MA000012
+    title: Pharmacy Industry Award 2020
+    industry: [pharmacy, community pharmacy, chemist, dispensary]
+    occupation: [pharmacy assistant, dispensary technician, pharmacist, pharmacy student, intern pharmacist]
+    excludes: []
+
+  - code: MA000005
+    title: Hair and Beauty Industry Award 2010
+    industry: [hair salon, hairdresser, barber, beauty salon, nail salon, spa, beauty therapy]
+    occupation: [hairdresser, barber, beauty therapist, nail technician, salon assistant, apprentice hairdresser]
+    excludes: []
+
+  - code: MA000016
+    title: Security Services Industry Award 2020
+    industry: [security company, security services, crowd control, guarding]
+    occupation: [security guard, security officer, crowd controller, patrol officer, control room operator]
+    excludes: []
+
+  - code: MA000018
+    title: Aged Care Award 2010
+    industry: [aged care, nursing home, retirement village, residential aged care]
+    occupation: [personal care worker, aged care worker, assistant in nursing, recreational activities officer,
+                 care assistant]
+    excludes: [disability, home care]
+
+  - code: MA000100
+    title: Social, Community, Home Care and Disability Services Industry Award 2010
+    industry: [disability services, home care, community services, ndis, social services, youth services]
+    occupation: [disability support worker, support worker, home care worker, community worker, case worker]
+    excludes: [nursing home, residential aged care]
+
+  - code: MA000028
+    title: Horticulture Award 2020
+    industry: [farm, orchard, vineyard, horticulture, nursery, market garden, berry farm, packing shed]
+    occupation: [fruit picker, picker, farm hand, harvest worker, pruner, packer, horticultural worker]
+    excludes: [warehouse, distribution centre]
+
+  - code: MA000059
+    title: Meat Industry Award 2020
+    industry: [butcher shop, meat processing, abattoir, boning room, smallgoods]
+    occupation: [butcher, meat worker, slicer, boner, slaughterer, meat packer]
+    excludes: []

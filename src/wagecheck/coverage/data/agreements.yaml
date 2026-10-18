@@ -1,0 +1,22 @@
+# Curated registry of enterprise agreements for large employers of casual/part-time staff.
+# Only add an entry after checking it on the FWC Document Search (official source).
+# An approved, current enterprise agreement applies instead of the modern award.
+agreements:
+  - id: coles-retail-ea-2024
+    title: Coles Retail Enterprise Agreement 2024
+    fwc_matter: AG2024/1124
+    url: https://www.fwc.gov.au/documents/agreement-applications/ag2024_1124.pdf
+    commenced: 2024-10-07
+    employers:
+      - legal_name: Coles Supermarkets Australia Pty Ltd
+        abn: "45004189708"
+        # Not "Coles Express": those service stations are run by a different company.
+        trading_names: [Coles, Coles Supermarkets, Coles Local]
+      - legal_name: Liquorland (Australia) Pty Ltd
+        abn: null
+        trading_names: [Liquorland]
+    coverage_note: >-
+      Wages-paid team members of Coles Supermarkets and Coles Liquor in retail stores.
+      Check the agreement's coverage clause for excluded roles before relying on it.
+    underlying_award: MA000004
+    verified_on: 2026-10-18

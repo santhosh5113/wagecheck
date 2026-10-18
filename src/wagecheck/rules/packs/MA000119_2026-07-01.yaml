@@ -1,0 +1,83 @@
+# Restaurant Industry Award 2020 [MA000119] — rule pack
+# Every dollar figure and percentage below is taken from the FWC Modern Awards Pay Database API
+# (pay-rates, penalties, wage-allowances) for rates in force on 2026-10-18 (operative 1 July 2026).
+# Clause numbers follow the FWC consolidated award text; the MAPD records cite the same clauses.
+instrument_id: MA000119
+instrument_type: modern_award
+title: Restaurant Industry Award 2020
+effective_from: 2026-07-01
+verified_on: 2026-10-18
+timezone: Australia/Sydney
+sources:
+  - title: "FWC MAPD API /awards/MA000119/pay-rates, /penalties, /wage-allowances (2026-10-18)"
+    url: "https://api.fwc.gov.au/api/v1/awards/MA000119"
+  - title: "FWC consolidated award text MA000119 (clause structure)"
+    url: "https://awards.fairwork.gov.au/MA000119.html"
+
+# Table 3 — Minimum rates (cl 18.1), adult hourly. MAPD numbers the grades 1-7 from Introductory.
+classifications:
+  restaurant_introductory: {mapd_level: 1, mapd_name: "Introductory Level", hourly: "25.74", clause: "18.1"}
+  restaurant_level_1: {mapd_level: 2, mapd_name: "Level 1", hourly: "26.44", clause: "18.1"}
+  restaurant_level_2: {mapd_level: 3, mapd_name: "Level 2", hourly: "27.08", clause: "18.1"}
+  restaurant_level_3: {mapd_level: 4, mapd_name: "Level 3", hourly: "27.97", clause: "18.1"}
+  restaurant_level_4: {mapd_level: 5, mapd_name: "Level 4", hourly: "29.45", clause: "18.1"}
+  restaurant_level_5: {mapd_level: 6, mapd_name: "Level 5", hourly: "31.30", clause: "18.1"}
+  restaurant_level_6: {mapd_level: 7, mapd_name: "Level 6", hourly: "32.13", clause: "18.1"}
+
+casual_loading_pct: 25
+casual_loading_clause: "11.1"
+
+min_engagement:
+  casual_hours: 2       # cl 11.3: engaged and paid for at least 2 consecutive hours
+  casual_clause: "11.3"
+  part_time_hours: 3    # cl 10.7(b): not rostered for fewer than 3 hours
+  part_time_clause: "10.7(b)"
+
+# Table 8 — Penalty rates (cl 24.2). Casual percentages include the casual loading.
+# Late-night work Monday to Friday adds a flat amount per hour or part of an hour (MAPD wage allowances).
+ordinary: {ft_pt: 100, casual: 125, clause: "24.2 Table 8"}
+time_bands:
+  - {name: public_holiday, days: [public_holiday], rate: {ft_pt: 225, casual: 250, clause: "24.2 Table 8"}}
+  - name: sunday
+    days: [sunday]
+    levels: [restaurant_introductory, restaurant_level_1, restaurant_level_2]
+    rate: {ft_pt: 150, casual: 150, loading_exception: true, clause: "24.2 Table 8 (Introductory to Level 2)"}
+  - name: sunday
+    days: [sunday]
+    levels: [restaurant_level_3, restaurant_level_4, restaurant_level_5, restaurant_level_6]
+    rate: {ft_pt: 150, casual: 175, clause: "24.2 Table 8 (Level 3 to 6)"}
+  - {name: saturday, days: [saturday], rate: {ft_pt: 125, casual: 150, clause: "24.2 Table 8"}}
+  - name: late_night_10pm_to_midnight
+    days: [weekday]
+    start: "22:00"
+    rate: {ft_pt: 100, casual: 125, flat_per_hour: "2.95", flat_per_part_hour: true, clause: "24.2 Table 8"}
+  - name: late_night_midnight_to_6am
+    days: [weekday]
+    end: "06:00"
+    rate: {ft_pt: 100, casual: 125, flat_per_hour: "4.42", flat_per_part_hour: true, clause: "24.2 Table 8"}
+
+# Table 7 — Overtime (cl 23.4). MAPD applies the same percentages to casuals, with no casual loading
+# (e.g. Introductory casual, first 2 hours Monday to Friday = 150% = $38.61).
+overtime:
+  trigger_clause: "10.13(b), 11.5, 23.1"
+  daily_max_hours: 11.5          # full-time / part-time daily maximum
+  long_day_max_hours: 11.5
+  casual_daily_max_hours: 12     # cl 11.2: casuals up to 12 hours per day or shift
+  first_hours: 2
+  mon_sat_first: {ft_pt: 150, casual: 150, loading_exception: true, clause: "23.4 Table 7"}
+  mon_sat_after: {ft_pt: 200, casual: 200, loading_exception: true, clause: "23.4 Table 7"}
+  saturday_first: {ft_pt: 175, casual: 175, loading_exception: true, clause: "23.4 Table 7"}
+  saturday_after: {ft_pt: 200, casual: 200, loading_exception: true, clause: "23.4 Table 7"}
+  sunday: {ft_pt: 200, casual: 200, loading_exception: true, clause: "23.4 Table 7"}
+  # MAPD lists no separate public holiday overtime rate; the public holiday penalty is applied.
+  public_holiday: {ft_pt: 225, casual: 250, clause: "24.2 Table 8"}
+
+known_gaps:
+  - "Junior and apprentice rates not modelled."
+  - "Weekly overtime (38 hours/week averaged over the roster), rostered-day-off and outside-roster triggers
+    not modelled; daily limits only."
+  - "Break after overtime (cl 23.2), missed meal breaks (cl 16.5-16.6) and split shift allowance
+    ($5.60, cl 21.3(b)) not modelled."
+  - "'Per hour or part thereof' late-night amounts are applied per band per day in each shift."
+  - "Public holiday overtime: MAPD has no separate rate; public holiday penalty applied."
+  - "Expense allowances (meal, clothing/tools) not modelled."

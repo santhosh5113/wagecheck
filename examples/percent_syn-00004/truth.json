@@ -1,0 +1,403 @@
+{
+  "id": "syn-00004",
+  "scenario": "fast_food",
+  "award": "MA000003",
+  "classification": "fast_food_employee_level_2",
+  "employment": "casual",
+  "shiftworker": false,
+  "shifts": [
+    {
+      "start": "2026-08-10T18:00:00",
+      "end": "2026-08-11T01:30:00",
+      "unpaid_breaks": [
+        {
+          "start": "2026-08-10T21:30:00",
+          "end": "2026-08-10T22:00:00"
+        }
+      ],
+      "long_day": false
+    },
+    {
+      "start": "2026-08-11T18:00:00",
+      "end": "2026-08-12T01:30:00",
+      "unpaid_breaks": [
+        {
+          "start": "2026-08-11T21:30:00",
+          "end": "2026-08-11T22:00:00"
+        }
+      ],
+      "long_day": false
+    },
+    {
+      "start": "2026-08-13T18:00:00",
+      "end": "2026-08-14T01:30:00",
+      "unpaid_breaks": [
+        {
+          "start": "2026-08-13T21:30:00",
+          "end": "2026-08-13T22:00:00"
+        }
+      ],
+      "long_day": false
+    },
+    {
+      "start": "2026-08-14T20:00:00",
+      "end": "2026-08-15T01:00:00",
+      "unpaid_breaks": [],
+      "long_day": false
+    },
+    {
+      "start": "2026-08-16T20:00:00",
+      "end": "2026-08-17T01:00:00",
+      "unpaid_breaks": [],
+      "long_day": false
+    }
+  ],
+  "payslip": {
+    "employer_name": "Kebab Corner Pty Ltd",
+    "employer_abn": "15 003 329 180",
+    "employee_name": "Priya Brown",
+    "employee_id": "450076",
+    "job_title": "Crew Member",
+    "classification_label": "Fast Food Employee Level 2",
+    "employment_type": "Casual",
+    "award_named": "Fast Food Industry Award 2010",
+    "period_start": "2026-08-10",
+    "period_end": "2026-08-16",
+    "pay_date": "2026-08-21",
+    "lines": [
+      {
+        "code": "",
+        "description": "Casual ordinary hours 125%",
+        "hours": "12.50",
+        "rate": "36.81",
+        "amount": "460.14",
+        "band": "ordinary"
+      },
+      {
+        "code": "",
+        "description": "Casual late night 10pm-midnight 135%",
+        "hours": "8.00",
+        "rate": "39.76",
+        "amount": "318.08",
+        "band": "late_night_10pm_to_midnight"
+      },
+      {
+        "code": "",
+        "description": "Casual late night midnight-6am 140%",
+        "hours": "5.50",
+        "rate": "41.23",
+        "amount": "226.78",
+        "band": "late_night_midnight_to_6am"
+      },
+      {
+        "code": "",
+        "description": "Casual saturday penalty 150%",
+        "hours": "1.00",
+        "rate": "44.18",
+        "amount": "44.18",
+        "band": "saturday"
+      },
+      {
+        "code": "",
+        "description": "Casual sunday penalty 175%",
+        "hours": "4.00",
+        "rate": "51.54",
+        "amount": "206.16",
+        "band": "sunday"
+      }
+    ],
+    "gross": "1255.34",
+    "tax": "213.41",
+    "net": "1041.93",
+    "super_amount": "150.64",
+    "style": "percent"
+  },
+  "expected_gross": "1255.34",
+  "paid_gross": "1255.34",
+  "shortfall": "0.00",
+  "errors": [],
+  "expected_lines": [
+    {
+      "shift": 0,
+      "date": "2026-08-10",
+      "band": "ordinary",
+      "true_band": "ordinary",
+      "minutes": 210,
+      "percent": "125",
+      "rate": "36.81",
+      "amount": "128.84"
+    },
+    {
+      "shift": 0,
+      "date": "2026-08-10",
+      "band": "late_night_10pm_to_midnight",
+      "true_band": "late_night_10pm_to_midnight",
+      "minutes": 120,
+      "percent": "135",
+      "rate": "39.76",
+      "amount": "79.52"
+    },
+    {
+      "shift": 0,
+      "date": "2026-08-11",
+      "band": "late_night_midnight_to_6am",
+      "true_band": "late_night_midnight_to_6am",
+      "minutes": 90,
+      "percent": "140",
+      "rate": "41.23",
+      "amount": "61.85"
+    },
+    {
+      "shift": 1,
+      "date": "2026-08-11",
+      "band": "ordinary",
+      "true_band": "ordinary",
+      "minutes": 210,
+      "percent": "125",
+      "rate": "36.81",
+      "amount": "128.84"
+    },
+    {
+      "shift": 1,
+      "date": "2026-08-11",
+      "band": "late_night_10pm_to_midnight",
+      "true_band": "late_night_10pm_to_midnight",
+      "minutes": 120,
+      "percent": "135",
+      "rate": "39.76",
+      "amount": "79.52"
+    },
+    {
+      "shift": 1,
+      "date": "2026-08-12",
+      "band": "late_night_midnight_to_6am",
+      "true_band": "late_night_midnight_to_6am",
+      "minutes": 90,
+      "percent": "140",
+      "rate": "41.23",
+      "amount": "61.85"
+    },
+    {
+      "shift": 2,
+      "date": "2026-08-13",
+      "band": "ordinary",
+      "true_band": "ordinary",
+      "minutes": 210,
+      "percent": "125",
+      "rate": "36.81",
+      "amount": "128.84"
+    },
+    {
+      "shift": 2,
+      "date": "2026-08-13",
+      "band": "late_night_10pm_to_midnight",
+      "true_band": "late_night_10pm_to_midnight",
+      "minutes": 120,
+      "percent": "135",
+      "rate": "39.76",
+      "amount": "79.52"
+    },
+    {
+      "shift": 2,
+      "date": "2026-08-14",
+      "band": "late_night_midnight_to_6am",
+      "true_band": "late_night_midnight_to_6am",
+      "minutes": 90,
+      "percent": "140",
+      "rate": "41.23",
+      "amount": "61.85"
+    },
+    {
+      "shift": 3,
+      "date": "2026-08-14",
+      "band": "ordinary",
+      "true_band": "ordinary",
+      "minutes": 120,
+      "percent": "125",
+      "rate": "36.81",
+      "amount": "73.62"
+    },
+    {
+      "shift": 3,
+      "date": "2026-08-14",
+      "band": "late_night_10pm_to_midnight",
+      "true_band": "late_night_10pm_to_midnight",
+      "minutes": 120,
+      "percent": "135",
+      "rate": "39.76",
+      "amount": "79.52"
+    },
+    {
+      "shift": 3,
+      "date": "2026-08-15",
+      "band": "saturday",
+      "true_band": "saturday",
+      "minutes": 60,
+      "percent": "150",
+      "rate": "44.18",
+      "amount": "44.18"
+    },
+    {
+      "shift": 4,
+      "date": "2026-08-16",
+      "band": "sunday",
+      "true_band": "sunday",
+      "minutes": 240,
+      "percent": "175",
+      "rate": "51.54",
+      "amount": "206.16"
+    },
+    {
+      "shift": 4,
+      "date": "2026-08-17",
+      "band": "late_night_midnight_to_6am",
+      "true_band": "late_night_midnight_to_6am",
+      "minutes": 60,
+      "percent": "140",
+      "rate": "41.23",
+      "amount": "41.23"
+    }
+  ],
+  "paid_lines": [
+    {
+      "shift": 0,
+      "date": "2026-08-10",
+      "band": "ordinary",
+      "true_band": "ordinary",
+      "minutes": 210,
+      "percent": "125",
+      "rate": "36.81",
+      "amount": "128.84"
+    },
+    {
+      "shift": 0,
+      "date": "2026-08-10",
+      "band": "late_night_10pm_to_midnight",
+      "true_band": "late_night_10pm_to_midnight",
+      "minutes": 120,
+      "percent": "135",
+      "rate": "39.76",
+      "amount": "79.52"
+    },
+    {
+      "shift": 0,
+      "date": "2026-08-11",
+      "band": "late_night_midnight_to_6am",
+      "true_band": "late_night_midnight_to_6am",
+      "minutes": 90,
+      "percent": "140",
+      "rate": "41.23",
+      "amount": "61.85"
+    },
+    {
+      "shift": 1,
+      "date": "2026-08-11",
+      "band": "ordinary",
+      "true_band": "ordinary",
+      "minutes": 210,
+      "percent": "125",
+      "rate": "36.81",
+      "amount": "128.84"
+    },
+    {
+      "shift": 1,
+      "date": "2026-08-11",
+      "band": "late_night_10pm_to_midnight",
+      "true_band": "late_night_10pm_to_midnight",
+      "minutes": 120,
+      "percent": "135",
+      "rate": "39.76",
+      "amount": "79.52"
+    },
+    {
+      "shift": 1,
+      "date": "2026-08-12",
+      "band": "late_night_midnight_to_6am",
+      "true_band": "late_night_midnight_to_6am",
+      "minutes": 90,
+      "percent": "140",
+      "rate": "41.23",
+      "amount": "61.85"
+    },
+    {
+      "shift": 2,
+      "date": "2026-08-13",
+      "band": "ordinary",
+      "true_band": "ordinary",
+      "minutes": 210,
+      "percent": "125",
+      "rate": "36.81",
+      "amount": "128.84"
+    },
+    {
+      "shift": 2,
+      "date": "2026-08-13",
+      "band": "late_night_10pm_to_midnight",
+      "true_band": "late_night_10pm_to_midnight",
+      "minutes": 120,
+      "percent": "135",
+      "rate": "39.76",
+      "amount": "79.52"
+    },
+    {
+      "shift": 2,
+      "date": "2026-08-14",
+      "band": "late_night_midnight_to_6am",
+      "true_band": "late_night_midnight_to_6am",
+      "minutes": 90,
+      "percent": "140",
+      "rate": "41.23",
+      "amount": "61.85"
+    },
+    {
+      "shift": 3,
+      "date": "2026-08-14",
+      "band": "ordinary",
+      "true_band": "ordinary",
+      "minutes": 120,
+      "percent": "125",
+      "rate": "36.81",
+      "amount": "73.62"
+    },
+    {
+      "shift": 3,
+      "date": "2026-08-14",
+      "band": "late_night_10pm_to_midnight",
+      "true_band": "late_night_10pm_to_midnight",
+      "minutes": 120,
+      "percent": "135",
+      "rate": "39.76",
+      "amount": "79.52"
+    },
+    {
+      "shift": 3,
+      "date": "2026-08-15",
+      "band": "saturday",
+      "true_band": "saturday",
+      "minutes": 60,
+      "percent": "150",
+      "rate": "44.18",
+      "amount": "44.18"
+    },
+    {
+      "shift": 4,
+      "date": "2026-08-16",
+      "band": "sunday",
+      "true_band": "sunday",
+      "minutes": 240,
+      "percent": "175",
+      "rate": "51.54",
+      "amount": "206.16"
+    },
+    {
+      "shift": 4,
+      "date": "2026-08-17",
+      "band": "late_night_midnight_to_6am",
+      "true_band": "late_night_midnight_to_6am",
+      "minutes": 60,
+      "percent": "140",
+      "rate": "41.23",
+      "amount": "41.23"
+    }
+  ]
+}

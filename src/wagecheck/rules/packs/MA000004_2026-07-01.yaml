@@ -1,0 +1,86 @@
+# General Retail Industry Award 2020 [MA000004] — rule pack
+# Every number below was checked by hand against the sources listed, on verified_on.
+# Rates take effect from the first full pay period starting on or after effective_from.
+instrument_id: MA000004
+instrument_type: modern_award
+title: General Retail Industry Award 2020
+effective_from: 2026-07-01
+verified_on: 2026-10-18
+timezone: Australia/Sydney
+sources:
+  - title: "FWO Pay Guide — General Retail Industry Award [MA000004], effective 01/07/2026 (published 24/06/2026)"
+    url: "https://portal.fairwork.gov.au/ArticleDocuments/872/general-retail-industry-award-ma000004-pay-guide.pdf.aspx"
+  - title: "FWC Modern Awards Pay Database API, /awards/MA000004/pay-rates (all 8 levels match, 2026-10-18)"
+    url: "https://api.fwc.gov.au/api/v1/awards/MA000004/pay-rates"
+  - title: "FWC consolidated award text MA000004 (clause numbering and percentages)"
+    url: "https://awards.fairwork.gov.au/MA000004.html"
+
+# Table 4 — Minimum rates (cl 17.1). Adult rates only; juniors (cl 17.2) are a known gap.
+classifications:
+  retail_employee_level_1: {mapd_level: 1, weekly: "1056.80", hourly: "27.81", clause: "17.1"}
+  retail_employee_level_2: {mapd_level: 2, weekly: "1081.00", hourly: "28.45", clause: "17.1"}
+  retail_employee_level_3: {mapd_level: 3, weekly: "1097.80", hourly: "28.89", clause: "17.1"}
+  retail_employee_level_4: {mapd_level: 4, weekly: "1119.10", hourly: "29.45", clause: "17.1"}
+  retail_employee_level_5: {mapd_level: 5, weekly: "1165.10", hourly: "30.66", clause: "17.1"}
+  retail_employee_level_6: {mapd_level: 6, weekly: "1182.10", hourly: "31.11", clause: "17.1"}
+  retail_employee_level_7: {mapd_level: 7, weekly: "1241.40", hourly: "32.67", clause: "17.1"}
+  retail_employee_level_8: {mapd_level: 8, weekly: "1291.80", hourly: "33.99", clause: "17.1"}
+
+casual_loading_pct: 25
+casual_loading_clause: "11.1"
+
+min_engagement:
+  casual_hours: 3
+  casual_clause: "11.2"
+  part_time_hours: 3
+  part_time_clause: "10.9"
+
+# Table 2 — Span of hours (cl 15.1); extension to 11pm where trading runs late (cl 15.2(c)).
+span:
+  clause: "15.1"
+  weekday: {start: "07:00", end: "21:00"}
+  saturday: {start: "07:00", end: "18:00"}
+  sunday: {start: "09:00", end: "18:00"}
+  extended_trading_end: "23:00"
+  extended_trading_clause: "15.2(c)"
+
+# Table 12 — Penalty rates (cl 22.1). Casual column is inclusive of casual loading.
+# Bands are checked top to bottom; the first match wins.
+ordinary: {ft_pt: 100, casual: 125, clause: "17.1/11.1"}
+time_bands:
+  - {name: public_holiday, days: [public_holiday], rate: {ft_pt: 225, casual: 250, clause: "22.1 Table 12"}}
+  - {name: sunday, days: [sunday], rate: {ft_pt: 150, casual: 175, clause: "22.1 Table 12"}}
+  - {name: saturday, days: [saturday], rate: {ft_pt: 125, casual: 150, clause: "22.1 Table 12"}}
+  - {name: weekday_evening, days: [weekday], start: "18:00",
+     rate: {ft_pt: 125, casual: 150, clause: "22.1 Table 12"}}
+
+# Part 6 — Shiftwork. Applies only to employees specifically employed to do shiftwork (cl 23.1).
+shiftwork:
+  definition_clause: "24.1"
+  same_day_exclusion_clause: "24.3"
+  window_start: "18:00"   # shift starting at or after 6pm ...
+  window_end: "05:00"     # ... and before 5am the next day
+  weekday: {ft_pt: 130, casual: 155, clause: "25.1(a)"}
+  saturday: {ft_pt: 150, casual: 175, clause: "25.1(b)"}
+  sunday: {ft_pt: 175, casual: 200, clause: "25.1(c)"}
+  public_holiday: {ft_pt: 225, casual: 250, clause: "25.3(a) -> 22.1 Table 12"}
+  paid_breaks_clause: "26"
+
+# Table 10/11 — Overtime (cl 21.2). Casual column inclusive of loading.
+overtime:
+  trigger_clause: "21.2(a) Table 10"
+  daily_max_hours: 9
+  long_day_max_hours: 11
+  first_hours: 3
+  mon_sat_first: {ft_pt: 150, casual: 175, clause: "21.2(c) Table 11"}
+  mon_sat_after: {ft_pt: 200, casual: 225, clause: "21.2(c) Table 11"}
+  sunday: {ft_pt: 200, casual: 225, clause: "21.2(c) Table 11"}
+  public_holiday: {ft_pt: 250, casual: 275, clause: "21.2(c) Table 11"}
+
+known_gaps:
+  - "Junior rates (cl 17.2) and apprentice rates (cl 17.3-17.4) not modelled."
+  - "Weekly overtime triggers (38 ordinary hours/week, roster averaging) not modelled; daily triggers only."
+  - "Less than 12 hours between shifts at 200% (cl 16.6(b)) not modelled."
+  - "Baking production shiftwork (cl 25.2) not modelled."
+  - "Allowances (cl 19) not modelled."
+  - "Rate changeover uses the shift date, not the first full pay period on or after 1 July."

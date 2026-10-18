@@ -1,0 +1,80 @@
+# Fast Food Industry Award 2010 [MA000003] — rule pack
+# Structure and percentages: FWC consolidated award (amendments to 10 Dec 2025, PR794060).
+# Dollar rates from 1 July 2026: the 2025 award rates x 1.0475 (Annual Wage Review 2026), weekly
+# rounded to the nearest 10c and hourly = weekly / 38, matching FWC practice. All four adult hourly
+# rates confirmed against the FWC MAPD API on 2026-10-18 (`wagecheck mapd check MA000003`).
+instrument_id: MA000003
+instrument_type: modern_award
+title: Fast Food Industry Award 2010
+effective_from: 2026-07-01
+verified_on: 2026-10-18
+timezone: Australia/Sydney
+sources:
+  - title: "FWC consolidated award text MA000003 (to PR794060, 10 Dec 2025)"
+    url: "https://awards.fairwork.gov.au/MA000003.html"
+  - title: "FWC Modern Awards Pay Database API, /awards/MA000003/pay-rates (checked 2026-10-18)"
+    url: "https://api.fwc.gov.au/api/v1/awards/MA000003/pay-rates"
+
+# Table 3 — Minimum rates (cl 15.1). Adult rates only.
+classifications:
+  fast_food_employee_level_1: {mapd_level: 1, weekly: "1056.80", hourly: "27.81", clause: "15.1"}
+  fast_food_employee_level_2: {mapd_level: 2, weekly: "1119.10", hourly: "29.45", clause: "15.1"}
+  # MAPD numbers the two Level 3 classifications as levels 3 and 4
+  fast_food_employee_level_3_in_charge_of_one_or_none:
+    {mapd_level: 3, mapd_name: "Fast food employee level 3—in charge of one or no person",
+     weekly: "1136.40", hourly: "29.91", clause: "15.1"}
+  fast_food_employee_level_3_in_charge_of_two_or_more:
+    {mapd_level: 4, mapd_name: "Fast food employee level 3—in charge of 2 or more people",
+     weekly: "1150.40", hourly: "30.27", clause: "15.1"}
+
+casual_loading_pct: 25
+casual_loading_clause: "11.2(b)"
+
+min_engagement:
+  casual_hours: 3
+  casual_clause: "11.3"
+  part_time_hours: 3
+  part_time_clause: "10.2"
+
+# No span of ordinary hours and no separate shiftwork regime in this award: evening and night
+# work is paid through the late-night bands in Table 6 instead.
+
+# Table 6 — Penalty rates (cl 21). Casual column is inclusive of the casual loading (Note 1).
+ordinary: {ft_pt: 100, casual: 125, clause: "15.1/11.2(b)"}
+time_bands:
+  - {name: public_holiday, days: [public_holiday], rate: {ft_pt: 225, casual: 250, clause: "21 Table 6"}}
+  - name: sunday
+    days: [sunday]
+    levels: [fast_food_employee_level_1]
+    rate: {ft_pt: 125, casual: 150, clause: "21 Table 6 (Level 1)"}
+  - name: sunday
+    days: [sunday]
+    levels: [fast_food_employee_level_2, fast_food_employee_level_3_in_charge_of_one_or_none,
+             fast_food_employee_level_3_in_charge_of_two_or_more]
+    rate: {ft_pt: 150, casual: 175, clause: "21 Table 6 (Levels 2 and 3)"}
+  - {name: saturday, days: [saturday], rate: {ft_pt: 125, casual: 150, clause: "21 Table 6"}}
+  - {name: late_night_10pm_to_midnight, days: [weekday], start: "22:00",
+     rate: {ft_pt: 110, casual: 135, clause: "21 Table 6"}}
+  - {name: late_night_midnight_to_6am, days: [weekday], end: "06:00",
+     rate: {ft_pt: 115, casual: 140, clause: "21 Table 6"}}
+
+# Table 5 — Overtime (cl 20). Casuals: over 11 hours in a day (cl 20.4). Each Mon-Sat day stands
+# alone (cl 20.6(b)).
+overtime:
+  trigger_clause: "20.2-20.4"
+  daily_max_hours: 11
+  long_day_max_hours: 11
+  first_hours: 2
+  mon_sat_first: {ft_pt: 150, casual: 175, clause: "20.6(a) Table 5"}
+  mon_sat_after: {ft_pt: 200, casual: 225, clause: "20.6(a) Table 5"}
+  sunday: {ft_pt: 200, casual: 225, clause: "20.6(a) Table 5"}
+  public_holiday: {ft_pt: 250, casual: 275, clause: "20.6(a) Table 5"}
+
+known_gaps:
+  - "Junior rates not modelled."
+  - "Weekly overtime triggers (38 hours/week, roster averaging, 5-day rule) not modelled; daily only."
+  - "Sunday overtime minimum payment of 4 hours (cl 20.5) not modelled."
+  - "Work outside rostered times as an overtime trigger for full-time/part-time not modelled."
+  - "Monday-to-Friday late-night bands applied by calendar day: Saturday 00:00-06:00 is paid at the
+    Saturday rate, Monday 00:00-06:00 at the late-night rate."
+  - "Allowances not modelled."
