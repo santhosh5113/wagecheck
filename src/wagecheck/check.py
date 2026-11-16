@@ -6,11 +6,13 @@ deterministic calculator prices every shift and the difference is reported. No L
 
 from __future__ import annotations
 
+import math
 import re
 from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import date, datetime, time, timedelta
 from decimal import Decimal
+from typing import Any
 
 from wagecheck.engine.calculator import Calculator, round_cents
 from wagecheck.holidays import nsw_holidays
@@ -82,6 +84,40 @@ def parse_time(text: str) -> time:
     if hour > 23 or minute > 59:
         raise ValueError(f"can't read the time {text!r}")
     return time(hour, minute)
+
+
+def _blank(v: object) -> bool:
+    if v is None or (isinstance(v, float) and math.isnan(v)):
+        return True
+    return str(v).strip() in ("", "None", "NaT", "nan")
+
+
+def _as_date(v: object) -> date:
+    if isinstance(v, datetime):
+        return v.date()
+    if isinstance(v, date):
+        return v
+    return date.fromisoformat(str(v)[:10])
+
+
+def rows_to_shifts(rows: list[dict[str, Any]]) -> list[ShiftInput]:
+    """Turn the app's shift table into shifts. Empty rows are skipped; a half-filled row is an error that
+    names the row, so the person knows what to fix."""
+    shifts = []
+    for n, r in enumerate(rows, start=1):
+        cells = [r.get("date"), r.get("start"), r.get("finish")]
+        if all(_blank(v) for v in cells):
+            continue
+        if any(_blank(v) for v in cells):
+            raise ValueError(f"Shift row {n} is missing a date, start or finish. Fill it in, or delete the row "
+                             "(tick the box at the left of the row, then press Delete).")
+        brk = r.get("unpaid break (min)")
+        try:
+            shifts.append(ShiftInput(_as_date(r["date"]), parse_time(r["start"]), parse_time(r["finish"]),
+                                     0 if _blank(brk) else int(brk)))
+        except ValueError as e:
+            raise ValueError(f"Shift row {n}: {e}") from e
+    return shifts
 
 
 def classification_label(key: str) -> str:

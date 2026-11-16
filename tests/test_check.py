@@ -3,7 +3,7 @@ from decimal import Decimal
 
 import pytest
 
-from wagecheck.check import ShiftInput, check_period, parse_time, to_shift
+from wagecheck.check import ShiftInput, check_period, parse_time, rows_to_shifts, to_shift
 
 
 def night(day: int) -> ShiftInput:
@@ -80,3 +80,21 @@ def test_times_are_read_the_way_people_type_them(typed, expected):
 def test_unreadable_times_are_refused(typed):
     with pytest.raises(ValueError, match="can't read the time"):
         parse_time(typed)
+
+
+def test_table_rows_become_shifts_and_empty_rows_are_skipped():
+    rows = [{"date": date(2026, 10, 20), "start": "22:00", "finish": "6am", "unpaid break (min)": 30},
+            {"date": None, "start": None, "finish": None, "unpaid break (min)": None},
+            {"date": "2026-10-24 00:00:00", "start": "0900", "finish": "17", "unpaid break (min)": float("nan")}]
+    assert rows_to_shifts(rows) == [ShiftInput(date(2026, 10, 20), time(22), time(6), 30),
+                                    ShiftInput(date(2026, 10, 24), time(9), time(17), 0)]
+
+
+def test_half_filled_row_is_named():
+    rows = [{"date": date(2026, 10, 20), "start": "22:00", "finish": "06:00", "unpaid break (min)": 30},
+            {"date": date(2026, 10, 24), "start": "", "finish": None, "unpaid break (min)": None}]
+    with pytest.raises(ValueError, match="Shift row 2 is missing"):
+        rows_to_shifts(rows)
+    rows[1].update(start="9", finish="25:00")
+    with pytest.raises(ValueError, match="Shift row 2: can't read the time '25:00'"):
+        rows_to_shifts(rows)

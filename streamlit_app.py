@@ -16,10 +16,9 @@ from wagecheck.check import (  # noqa: E402
     AWARDS,
     SUPPORTED_FROM,
     SUPPORTED_TO,
-    ShiftInput,
     check_period,
     classification_label,
-    parse_time,
+    rows_to_shifts,
 )
 from wagecheck.rules.loader import load_pack  # noqa: E402
 
@@ -70,10 +69,12 @@ if st.button("Check my pay", type="primary"):
     if not st.session_state.adult:
         st.error("WageCheck can't check junior rates yet.")
         st.stop()
-    rows = shifts_df.dropna(subset=["date", "start", "finish"])
     try:
-        shifts = [ShiftInput(pd.Timestamp(r["date"]).date(), parse_time(r["start"]), parse_time(r["finish"]),
-                             int(r["unpaid break (min)"] or 0)) for _, r in rows.iterrows()]
+        shifts = rows_to_shifts(shifts_df.to_dict("records"))
+    except ValueError as e:
+        st.error(str(e))
+        st.stop()
+    try:
         result = check_period(award, classification, employment, shifts, Decimal(str(paid)),
                               shiftworker=shiftworker, extended_trading=extended)
     except ValueError as e:
