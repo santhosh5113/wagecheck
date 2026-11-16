@@ -50,7 +50,7 @@ All arithmetic happens in `engine/` with `Decimal`, from a rule pack that cites 
 
 ```bash
 pip install -e ".[dev]"
-pytest            # 180 tests incl. Hypothesis property tests
+pytest            # 196 tests incl. Hypothesis property tests
 ruff check . && mypy src
 python scripts/demo_calc.py
 ```

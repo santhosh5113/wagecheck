@@ -6,6 +6,7 @@ deterministic calculator prices every shift and the difference is reported. No L
 
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import date, datetime, time, timedelta
@@ -63,6 +64,24 @@ class PeriodCheck:
         if self.difference < -TOLERANCE:
             return "paid_above"
         return "matches"
+
+
+def parse_time(text: str) -> time:
+    """Read a clock time the way people type it: 22:00, 2200, 22.00, 22, 10pm, 10:30 pm, 9am."""
+    s = str(text).strip().lower().replace(" ", "").replace(".", ":")
+    m = re.fullmatch(r"(\d{1,2})(?::?(\d{2}))?(am|pm)?", s)
+    if not m:
+        raise ValueError(f"can't read the time {text!r}: type it like 22:00 or 10pm")
+    hour, minute, suffix = int(m.group(1)), int(m.group(2) or 0), m.group(3)
+    if suffix:
+        if not 1 <= hour <= 12:
+            raise ValueError(f"can't read the time {text!r}")
+        hour = hour % 12 + (12 if suffix == "pm" else 0)
+    if hour == 24 and minute == 0:
+        hour = 0  # 24:00 means midnight
+    if hour > 23 or minute > 59:
+        raise ValueError(f"can't read the time {text!r}")
+    return time(hour, minute)
 
 
 def classification_label(key: str) -> str:

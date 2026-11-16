@@ -3,7 +3,7 @@ from decimal import Decimal
 
 import pytest
 
-from wagecheck.check import ShiftInput, check_period, to_shift
+from wagecheck.check import ShiftInput, check_period, parse_time, to_shift
 
 
 def night(day: int) -> ShiftInput:
@@ -65,3 +65,18 @@ def test_day_shifts_get_no_overtime_warning():
     day = ShiftInput(date(2026, 10, 20), time(9), time(17), break_minutes=30)
     c = check_period("MA000004", "retail_employee_level_1", "casual", [day], Decimal(0))
     assert not any("night-shift box" in w for w in c.warnings)
+
+
+@pytest.mark.parametrize("typed, expected", [
+    ("22:00", time(22)), ("2200", time(22)), ("22", time(22)), ("22.30", time(22, 30)), ("10pm", time(22)),
+    ("10:30 PM", time(22, 30)), ("6am", time(6)), ("12am", time(0)), ("12pm", time(12)), ("24:00", time(0)),
+    (" 9:05 ", time(9, 5)),
+])
+def test_times_are_read_the_way_people_type_them(typed, expected):
+    assert parse_time(typed) == expected
+
+
+@pytest.mark.parametrize("typed", ["25:00", "13pm", "9:75", "noon", ""])
+def test_unreadable_times_are_refused(typed):
+    with pytest.raises(ValueError, match="can't read the time"):
+        parse_time(typed)
