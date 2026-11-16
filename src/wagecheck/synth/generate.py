@@ -122,6 +122,7 @@ def _assemble(idx: int, rng: random.Random, scenario: Scenario, classification: 
               start: date, weeks: int, shifts: list[Shift], expected: list[PaidLine], paid: list[PaidLine],
               errors: list[InjectedError], ctx: Context) -> Sample:
     style = rng.choice(STYLES)
+    layout = "alt" if rng.random() < 0.25 else "standard"
     casual = employment is EmploymentType.CASUAL
     lines = aggregate(paid, casual, style)
     gross, tax, net, sup = totals(lines)
@@ -136,7 +137,7 @@ def _assemble(idx: int, rng: random.Random, scenario: Scenario, classification: 
         employment_type={"casual": "Casual", "part_time": "Part-time", "full_time": "Full-time"}[employment.value],
         award_named=ctx.pack.title if rng.random() < 0.4 else None,
         period_start=start, period_end=end, pay_date=end + timedelta(days=rng.choice([3, 4, 5])),
-        lines=lines, gross=gross, tax=tax, net=net, super_amount=sup, style=style,
+        lines=lines, gross=gross, tax=tax, net=net, super_amount=sup, style=style, layout=layout,
     )
     exp_total, paid_total = total(expected), total(paid)
     assert gross == paid_total

@@ -20,6 +20,9 @@ from wagecheck.synth.errors import PaidLine
 
 Style = Literal["codes", "descriptive", "percent"]
 STYLES: tuple[Style, ...] = ("codes", "descriptive", "percent")
+# "alt" is a held-out visual layout with different labels, date format and one-line pay items.
+# The rule-based extractor was not written for it, so it measures how well extraction generalises.
+Layout = Literal["standard", "alt"]
 
 _LABELS: dict[str, tuple[str, str]] = {  # band -> (code, description)
     "ordinary": ("ORD", "Ordinary hours"),
@@ -82,6 +85,7 @@ class Payslip(BaseModel):
     net: Decimal
     super_amount: Decimal
     style: Style
+    layout: Layout = "standard"
 
 
 def aggregate(paid: list[PaidLine], casual: bool, style: Style) -> list[PayslipLine]:

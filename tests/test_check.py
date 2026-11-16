@@ -1,0 +1,52 @@
+from datetime import date, time
+from decimal import Decimal
+
+import pytest
+
+from wagecheck.check import ShiftInput, check_period, to_shift
+
+
+def night(day: int) -> ShiftInput:
+    return ShiftInput(date(2026, 10, day), time(22, 0), time(6, 0))
+
+
+def test_night_fill_matches_hand_worked_calculator_case():
+    # Same shift as test_calculator.test_casual_night_fill_weekday: 8 hours at $43.11 = $344.88
+    c = check_period("MA000004", "retail_employee_level_1", "casual", [night(20)], Decimal("344.88"),
+                     shiftworker=True)
+    assert c.owed == Decimal("344.88") and c.verdict == "matches"
+
+
+def test_underpaid_and_paid_above():
+    shifts = [night(20), ShiftInput(date(2026, 10, 23), time(22, 0), time(6, 0))]  # Fri into Sat
+    c = check_period("MA000004", "retail_employee_level_1", "casual", shifts, Decimal("600"), shiftworker=True)
+    assert c.owed == Decimal("344.88") + Decimal("86.22") + Decimal("292.02")
+    assert c.verdict == "underpaid" and c.difference == c.owed - Decimal("600")
+    assert check_period("MA000004", "retail_employee_level_1", "casual", shifts, Decimal("900"),
+                        shiftworker=True).verdict == "paid_above"
+
+
+def test_finish_before_start_runs_past_midnight_and_break_sits_mid_shift():
+    s = to_shift(ShiftInput(date(2026, 10, 20), time(22, 0), time(6, 0), break_minutes=30))
+    assert s.end.day == 21
+    b = s.unpaid_breaks[0]
+    assert (b.start.hour, b.start.minute, b.end.hour, b.end.minute) == (1, 45, 2, 15)
+
+
+def test_dates_outside_the_rate_year_are_refused():
+    with pytest.raises(ValueError, match="only shifts from"):
+        check_period("MA000004", "retail_employee_level_1", "casual",
+                     [ShiftInput(date(2026, 6, 30), time(9), time(17))], Decimal(0))
+
+
+def test_unknown_classification_is_refused():
+    with pytest.raises(ValueError, match="not a classification"):
+        check_period("MA000003", "retail_employee_level_1", "casual",
+                     [ShiftInput(date(2026, 10, 20), time(9), time(17))], Decimal(0))
+
+
+def test_part_time_over_38_hours_a_week_is_flagged():
+    week = [ShiftInput(date(2026, 10, d), time(8), time(17)) for d in range(19, 24)]  # Mon-Fri, 9 hours each
+    c = check_period("MA000003", "fast_food_employee_level_1", "part_time", week, Decimal(0))
+    assert any("over 38" in w for w in c.warnings)
+    assert c.known_gaps and c.award_url

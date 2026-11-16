@@ -3,6 +3,10 @@
 Checks whether casual and part-time workers in Australia were paid what their Modern Award requires,
 shift by shift, and explains each gap with the exact clause.
 
+**Try it:** LIVE_URL_PLACEHOLDER. Enter your shifts and gross pay for one pay period and see the
+award minimum, shift by shift, with clause references. Adults, NSW, Retail / Fast Food / Restaurant /
+Hospitality awards, shifts from 1 July 2026 to 30 June 2027. Nothing you enter is stored.
+
 > **Not legal advice.** WageCheck flags possible discrepancies. For a real dispute, contact the
 > [Fair Work Ombudsman](https://www.fairwork.gov.au) (13 13 94) or your union.
 
@@ -36,16 +40,17 @@ All arithmetic happens in `engine/` with `Decimal`, from a rule pack that cites 
 | 1e | Restaurant pack built from live MAPD data; engine handles part-hour flat loadings, Saturday OT tier, casual OT without loading | ✅ |
 | 1f | Hospitality pack (general stream) from live MAPD data; stream-aware MAPD cross-check | ✅ |
 | 2 | Synthetic payslip + roster generator with injected underpayments | ✅ |
-| 3 | Extraction (OCR + structured LLM output), field-level F1 | — |
+| 3 | Extraction: PDF text + local OCR, rule baseline, LLM (Ollama or Claude) with schema + repair, field-level F1 | ✅ |
 | 4 | Award clause RAG, retrieval accuracy | — |
 | 5 | Discrepancy + recurring-pattern detection, precision/recall | — |
-| 6 | Explanation reports, Streamlit demo, end-to-end dollar error, CI | — |
+| v1 app | Streamlit app: shifts + gross pay → award minimum per shift, verdict, CSV; deployed on Streamlit Community Cloud | ✅ |
+| 6 | Explanation reports, payslip upload in the app, end-to-end dollar error | — |
 
 ## Phase 1: rules core
 
 ```bash
 pip install -e ".[dev]"
-pytest            # 137 tests incl. Hypothesis property tests
+pytest            # 178 tests incl. Hypothesis property tests
 ruff check . && mypy src
 python scripts/demo_calc.py
 ```
@@ -212,6 +217,86 @@ never match a real business, and every page is marked synthetic. See `examples/`
 
 Payslip lines show hours, rate and amount the way payroll systems do; amounts are rounded per shift, so
 hours x rate can differ from the amount by a few cents, which the detector has to tolerate.
+
+## Phase 3: extraction
+
+```bash
+pip install -e ".[dev]"                                   # includes RapidOCR
+wagecheck synth --n 100 --seed 42 --scans
+wagecheck eval-extract --method baseline --limit 100
+wagecheck eval-extract --method llm --limit 30           # local Qwen via Ollama (default)
+WAGECHECK_LLM=anthropic wagecheck eval-extract --method llm --limit 30   # Claude API instead
+wagecheck extract path/to/payslip.pdf                    # one payslip -> JSON
+```
+
+**Pipeline.** Digital PDFs are read from their text layer (PyMuPDF). Photos and scans go through RapidOCR
+locally; rows are rebuilt after de-skewing with the median angle of the OCR boxes, because a 2° tilt is
+enough to put a description on a different row from its numbers.
+
+**Two extractors, one schema.** A rule-based baseline (labels + column positions, tolerant of common OCR
+damage) and an LLM extractor. The LLM is constrained to a JSON schema (Ollama `format`, Claude
+`output_config.format`), then checked arithmetically: lines must sum to gross, gross − tax must equal net,
+and hours × rate must be close to each amount. If a check fails, the model gets one repair turn listing
+the failures. One switch picks the model: `WAGECHECK_LLM=ollama|anthropic`, `WAGECHECK_MODEL=...`.
+
+**Held-out layout.** A quarter of synthetic payslips use a second visual layout (different labels, dates
+written out, each pay item on one line). The baseline was written against the standard layout only, so
+this split measures generalisation rather than template matching.
+
+**Scoring.** Header fields are exact matches after normalising case, spacing and punctuation (OCR drops
+spaces); dates and money must be exact. A pay line counts only if hours, rate and amount are all right.
+"Exact" is the share of payslips with every field and line correct.
+
+Baseline, 100 synthetic payslips (seed 42), each as a digital PDF and as a degraded scan:
+
+| Group | n | Header F1 | Line F1 | Exact payslips |
+|---|---|---|---|---|
+| PDF, standard layout | 76 | 1.000 | 1.000 | 100% |
+| Scan, standard layout | 76 | 0.962 | 0.965 | 54% |
+| PDF, held-out layout | 24 | 0.131 | 0.000 | 0% |
+| Scan, held-out layout | 24 | 0.131 | 0.000 | 0% |
+
+Rules are perfect on the layout they were written for, lose almost half of fully correct payslips to OCR
+noise, and collapse on a layout they have never seen.
+
+Local LLM (Qwen 2.5 7B Instruct via Ollama, 16 GB MacBook Air), first 30 synthetic payslips, each as PDF and scan:
+
+| Group | n | Header F1 | Line F1 | Exact payslips |
+|---|---|---|---|---|
+| PDF, standard layout | 23 | 0.994 | 1.000 | 91% |
+| Scan, standard layout | 23 | 0.997 | 1.000 | 96% |
+| PDF, held-out layout | 7 | 1.000 | 1.000 | 100% |
+| Scan, held-out layout | 7 | 0.899 | 1.000 | 29% |
+| **All** | 60 | **0.985** | **1.000** | **87%** |
+
+The LLM gets every pay line right on every layout, including the held-out one where the rules score 0.
+Remaining misses are mostly money fields where OCR dropped a digit (e.g. `$178.5` for $178.95); the model
+is told never to calculate a missing value, so these stay as honest failures. About 50 seconds per document
+on a laptop.
+
+Two bugs the evaluation caught, both fixed:
+- Constraining dates with JSON-schema `format: date` made Ollama's grammar force `YYYY` first, so a model
+  copying `14/12/2026` produced `1420-12-20` (date accuracy 25%). Dates are now copied as printed and parsed
+  in code, day first.
+- OCR drops spaces (`20Jul2026`), so the date parser splits digits from letters (date accuracy 88% → 100%).
+
+The cache stores the model's raw output and re-parses it on every run, so a parser fix is re-scored in
+seconds without re-running the model.
+
+## v1 web app
+
+```bash
+pip install -r requirements.txt
+streamlit run streamlit_app.py
+```
+
+`streamlit_app.py` is a thin form over `wagecheck.check.check_period`: shifts (date, start, finish, unpaid
+break) and gross pay in; the award minimum per shift, the difference, and a CSV breakdown with clause numbers
+out. No LLM and no network calls at run time: the rule packs ship with the code. A finish earlier than the
+start means the shift crossed midnight; an unpaid break is placed mid-shift. For part-time and full-time
+workers, any week over 38 hours is flagged because weekly overtime is not modelled yet.
+
+Deployed on Streamlit Community Cloud from `main` (entry point `streamlit_app.py`).
 
 ## Data
 

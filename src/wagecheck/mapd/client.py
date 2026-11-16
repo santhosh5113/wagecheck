@@ -79,9 +79,7 @@ class MapdClient:
         sleep: Callable[[float], None] = time.sleep,
         clock: Callable[[], float] = time.time,
     ) -> None:
-        self.cache_dir = Path(cache_dir) if cache_dir else None
-        if self.cache_dir:
-            self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.cache_dir = Path(cache_dir) if cache_dir else None  # created on first write, not here
         self.max_retries, self._sleep, self._clock = max_retries, sleep, clock
         self.page_pause_s = page_pause_s
         key = api_key or os.environ.get("FWC_API_KEY")
@@ -130,6 +128,7 @@ class MapdClient:
                 raise MapdApiError(resp.status_code, errors, resp.text)
             data = resp.json()
             if cf:
+                cf.parent.mkdir(parents=True, exist_ok=True)
                 cf.write_text(json.dumps(data))
             return data
         raise AssertionError("unreachable")

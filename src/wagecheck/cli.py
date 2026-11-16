@@ -9,6 +9,8 @@
     wagecheck mapd penalties MA000003 --level 1   # MAPD penalty $ values, for building packs
     wagecheck mapd allowances MA000119            # wage and expense allowances in force
     wagecheck synth --n 200 --scans               # synthetic payslips with injected underpayments
+    wagecheck extract payslip.pdf                 # payslip -> structured JSON (LLM by default)
+    wagecheck eval-extract --method baseline      # field-level F1 on the synthetic dataset
 """
 
 from __future__ import annotations
@@ -196,6 +198,85 @@ def cmd_synth(args: argparse.Namespace) -> int:
     return 0 if bad == 0 else 6
 
 
+def _extractor(args: argparse.Namespace):  # type: ignore[no-untyped-def]
+    from wagecheck.extract import baseline
+    from wagecheck.extract.llm import LlmExtractor, make_provider
+
+    if args.method == "baseline":
+        return lambda doc: baseline.extract(doc), "baseline"
+    provider = make_provider(args.llm, args.model)
+    ex = LlmExtractor(provider)
+    safe_model = provider.model.replace(":", "_").replace("/", "_")
+    return lambda doc: ex.extract(doc), f"llm-{provider.name}-{safe_model}"
+
+
+def cmd_extract(args: argparse.Namespace) -> int:
+    from wagecheck.extract.text import load
+
+    doc = load(Path(args.file))
+    run, _ = _extractor(args)
+    out = run(doc)
+    p = out if args.method == "baseline" else out.payslip
+    print(p.model_dump_json(indent=2))
+    for e in p.consistency_errors():
+        print("check failed:", e, file=sys.stderr)
+    return 0
+
+
+def cmd_eval_extract(args: argparse.Namespace) -> int:
+    import json
+    import time
+
+    from wagecheck.extract.evaluate import Report, score_doc
+    from wagecheck.extract.llm import payslip_from_raw
+    from wagecheck.extract.text import load
+    from wagecheck.synth.generate import Sample
+
+    data = Path(args.data)
+    ids = sorted(d.name for d in data.iterdir() if (d / "truth.json").exists())[: args.limit]
+    run, tag = _extractor(args)
+    cache = DATA / "eval_cache" / tag
+    if args.method == "llm":
+        cache.mkdir(parents=True, exist_ok=True)
+    sources = {"pdf": ["payslip.pdf"], "scan": ["payslip_scan.jpg"], "both": ["payslip.pdf", "payslip_scan.jpg"]}
+    report, t0, done = Report(), time.monotonic(), 0
+    for sid in ids:
+        truth = Sample.model_validate_json((data / sid / "truth.json").read_text()).payslip
+        for fname in sources[args.source]:
+            f = data / sid / fname
+            if not f.exists():
+                continue
+            src = "pdf" if f.suffix == ".pdf" else "scan"
+            # LLM runs are slow, so cache the model's raw output and re-parse it every time:
+            # a parser fix then needs no new model run. Rules are cheap and are never cached.
+            cached = cache / f"{sid}-{src}.raw.json"
+            if args.method == "baseline":
+                pred = run(load(f))
+            elif cached.exists() and not args.fresh:
+                pred = payslip_from_raw(cached.read_text())
+            else:
+                result = run(load(f))
+                pred = result.payslip
+                if result.final_raw:
+                    cached.write_text(result.final_raw)
+            report.add(f"{src}/{truth.layout}", score_doc(pred, truth))
+            done += 1
+            if done % 10 == 0:
+                print(f"  {done} documents scored ({time.monotonic() - t0:.0f}s)", file=sys.stderr)
+    rows = report.rows()
+    print(f"\nExtraction method: {tag}   documents: {done}")
+    print(f"{'group':<16}{'n':>5}{'header F1':>12}{'line F1':>10}{'exact':>8}")
+    for r in rows:
+        print(f"{r['group']:<16}{r['n']:>5}{r['header_f1']:>12.3f}{r['line_f1']:>10.3f}{r['exact_payslips']:>8.1%}")
+    print("\nPer-field accuracy (all documents):")
+    for field_name, acc in sorted(report.field_accuracy().items(), key=lambda kv: kv[1]):
+        print(f"  {field_name:<16} {acc:.1%}")
+    if args.out:
+        Path(args.out).write_text(json.dumps({"method": tag, "rows": rows,
+                                              "fields": report.field_accuracy()}, indent=2))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="wagecheck")
     p.add_argument("--db", default=str(DATA / "agreements.sqlite"))
@@ -251,8 +332,27 @@ def main(argv: list[str] | None = None) -> int:
     sy.add_argument("--scans", action="store_true", help="also write a degraded scan image per payslip")
     sy.set_defaults(fn=cmd_synth)
 
+    def _method_args(sp: argparse.ArgumentParser) -> None:
+        sp.add_argument("--method", choices=["baseline", "llm"], default="llm")
+        sp.add_argument("--llm", choices=["ollama", "anthropic"], help="default: $WAGECHECK_LLM or ollama")
+        sp.add_argument("--model", help="default: $WAGECHECK_MODEL or the provider's default")
+
+    ex = sub.add_parser("extract", help="extract structured data from one payslip (PDF or image)")
+    ex.add_argument("file")
+    _method_args(ex)
+    ex.set_defaults(fn=cmd_extract)
+    ev = sub.add_parser("eval-extract", help="score extraction on a synthetic dataset")
+    ev.add_argument("--data", default=str(DATA / "synth"))
+    ev.add_argument("--source", choices=["pdf", "scan", "both"], default="both")
+    ev.add_argument("--limit", type=int, default=50)
+    ev.add_argument("--out", help="write the report as JSON")
+    ev.add_argument("--fresh", action="store_true", help="ignore cached LLM predictions")
+    _method_args(ev)
+    ev.set_defaults(fn=cmd_eval_extract)
+
     args = p.parse_args(argv)
-    Path(args.db).parent.mkdir(parents=True, exist_ok=True)
+    if args.fn in (cmd_index_build, cmd_index_search, cmd_agreement_add):
+        Path(args.db).parent.mkdir(parents=True, exist_ok=True)
     try:
         return int(args.fn(args))
     except MapdApiError as e:
