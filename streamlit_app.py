@@ -48,7 +48,7 @@ st.subheader("Your shifts")
 st.caption("If the finish is earlier than the start, the shift ran past midnight. "
            "Unpaid break minutes are placed in the middle of the shift.")
 default = pd.DataFrame([
-    {"date": date(2026, 10, 20), "start": time(22, 0), "finish": time(6, 0), "unpaid break (min)": 30},
+    {"date": date(2026, 10, 20), "start": time(9, 0), "finish": time(17, 0), "unpaid break (min)": 30},
     {"date": date(2026, 10, 24), "start": time(9, 0), "finish": time(17, 0), "unpaid break (min)": 30},
 ])
 shifts_df = st.data_editor(
@@ -106,7 +106,10 @@ if st.button("Check my pay", type="primary"):
     st.download_button("Download this breakdown (CSV)", table.to_csv(index=False), "wagecheck.csv", "text/csv")
 
     for w in result.warnings:
-        st.info(w)
+        if "overstate" in w:
+            st.warning(w)
+        else:
+            st.info(w)
     with st.expander("What this check does NOT cover"):
         st.markdown("\n".join(f"- {g}" for g in [
             *result.known_gaps,

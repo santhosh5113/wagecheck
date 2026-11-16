@@ -120,6 +120,13 @@ def check_period(award_id: str, classification: str, employment_type: Employment
             if hours > WEEKLY_ORDINARY_HOURS:
                 warnings.append(f"Week of {monday:%d %b}: {hours:.2f} hours is over 38. Weekly overtime isn't "
                                 "checked yet, so the amount owed may be higher than shown.")
+    if pack.shiftwork is not None and not shiftworker:
+        outside = [r for r in results if any("span of hours" in c for li in r.lines for c in li.clauses)]
+        if outside:
+            days = ", ".join(f"{r.shift.start:%a %d %b}" for r in outside)
+            warnings.append(f"{days}: time outside ordinary hours is priced as overtime. If you were hired "
+                            "specifically to work nights (e.g. night fill), tick the night-shift box: shiftwork "
+                            "rates are lower than overtime, so this result may overstate what you're owed.")
     for r in results:
         warnings += [f"{r.shift.start:%a %d %b}: {n}" for n in r.notes]
     return PeriodCheck(award_id=award_id, award_title=pack.title, classification=classification,

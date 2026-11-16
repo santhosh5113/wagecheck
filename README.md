@@ -3,7 +3,7 @@
 Checks whether casual and part-time workers in Australia were paid what their Modern Award requires,
 shift by shift, and explains each gap with the exact clause.
 
-**Try it:** LIVE_URL_PLACEHOLDER. Enter your shifts and gross pay for one pay period and see the
+**Try it:** **[wagecheck.streamlit.app](https://wagecheck.streamlit.app)**. Enter your shifts and gross pay for one pay period and see the
 award minimum, shift by shift, with clause references. Adults, NSW, Retail / Fast Food / Restaurant /
 Hospitality awards, shifts from 1 July 2026 to 30 June 2027. Nothing you enter is stored.
 
@@ -50,7 +50,7 @@ All arithmetic happens in `engine/` with `Decimal`, from a rule pack that cites 
 
 ```bash
 pip install -e ".[dev]"
-pytest            # 178 tests incl. Hypothesis property tests
+pytest            # 180 tests incl. Hypothesis property tests
 ruff check . && mypy src
 python scripts/demo_calc.py
 ```
