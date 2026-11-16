@@ -39,7 +39,8 @@ employment = st.radio("Employment type", ["casual", "part_time", "full_time"], h
 shiftworker = extended = False
 if award == "MA000004":
     shiftworker = st.checkbox("I was hired specifically to work night shifts (e.g. night fill)",
-                              help="Retail award cl 23 shiftwork rates. Tick only if your contract says so.")
+                              help="Retail award cl 24-26: shiftwork rates; breaks are paid. "
+                                   "Tick only if you were hired as a shiftworker.")
     extended = st.checkbox("My store trades past 9pm on weekdays or 6pm on weekends")
 st.checkbox("I am 21 or older", value=True, key="adult",
             help="Junior rates are not modelled, so results for under-21s would be wrong.")
