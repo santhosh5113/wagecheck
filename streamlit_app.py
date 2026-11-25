@@ -24,7 +24,7 @@ from wagecheck.rules.loader import load_pack  # noqa: E402
 
 st.set_page_config(page_title="WageCheck", page_icon="💵")
 st.title("WageCheck")
-st.caption("Were you paid the award minimum? Enter your shifts and your gross pay for one pay period. "
+st.caption("Were you paid the legal minimum? Enter your shifts and your gross pay for one pay period. "
            "Adults, NSW, 4 awards + the Coles agreement, shifts from 1 July 2026 to 30 June 2027.")
 st.warning("Not legal advice. This is a portfolio project and can be wrong. "
            "For a real dispute, contact the Fair Work Ombudsman on 13 13 94.", icon="⚠️")
@@ -89,7 +89,8 @@ if st.button("Check my pay", type="primary"):
         st.stop()
 
     c1, c2, c3 = st.columns(3)
-    c1.metric("Award minimum", f"${result.owed:,.2f}")
+    kind = "agreement" if pack.instrument_type == "enterprise_agreement" else "award"
+    c1.metric(f"{kind.capitalize()} minimum", f"${result.owed:,.2f}")
     c2.metric("You were paid", f"${result.paid:,.2f}")
     c3.metric("Difference", f"${abs(result.difference):,.2f}",
               "short" if result.verdict == "underpaid" else "over", delta_color="inverse")
@@ -97,10 +98,11 @@ if st.button("Check my pay", type="primary"):
         st.error(f"You may have been underpaid by **${result.difference:,.2f}** for these shifts. Check the "
                  "breakdown, then raise it with your employer or the Fair Work Ombudsman (fairwork.gov.au).")
     elif result.verdict == "paid_above":
-        st.success("You were paid at least the award minimum for these shifts. "
-                   "(Many employers pay above the award, or under an enterprise agreement.)")
+        st.success(f"You were paid at least the {kind} minimum for these shifts."
+                   + (" (Many employers pay above the award, or under an enterprise agreement.)"
+                      if kind == "award" else ""))
     else:
-        st.success("Your pay matches the award minimum for these shifts (within $1).")
+        st.success(f"Your pay matches the {kind} minimum for these shifts (within $1).")
 
     st.subheader("How it was worked out")
     lines = [{"shift": f"{r.shift.start:%a %d/%m %H:%M}", "band": li.band.replace("_", " "),

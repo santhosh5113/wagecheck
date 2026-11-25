@@ -23,3 +23,11 @@ def test_every_award_loads():
     for award in at.selectbox[0].options:
         at.selectbox[0].set_value(award.split("[")[-1].rstrip("]")).run()
         assert not at.exception
+
+
+def test_agreement_results_say_agreement_not_award():
+    at = AppTest.from_file(APP, default_timeout=60).run()
+    at.selectbox[0].set_value("coles-retail-ea-2024").run()
+    at.button[0].click().run()
+    assert not at.exception
+    assert at.metric[0].label == "Agreement minimum"
