@@ -13,3 +13,7 @@ dist/
 .DS_Store
 !/requirements.txt
 /llm_report.json
+
+# Real payslips never go in the repo: keep them in private/ (or anywhere outside the repo)
+/private/
+get_payslip*.pdf
