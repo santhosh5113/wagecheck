@@ -12,3 +12,4 @@ dist/
 /*.txt
 .DS_Store
 !/requirements.txt
+/llm_report.json
