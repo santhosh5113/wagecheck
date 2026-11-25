@@ -25,11 +25,11 @@ from wagecheck.rules.loader import load_pack  # noqa: E402
 st.set_page_config(page_title="WageCheck", page_icon="💵")
 st.title("WageCheck")
 st.caption("Were you paid the award minimum? Enter your shifts and your gross pay for one pay period. "
-           "Adults, NSW, 4 awards, shifts from 1 July 2026 to 30 June 2027.")
+           "Adults, NSW, 4 awards + the Coles agreement, shifts from 1 July 2026 to 30 June 2027.")
 st.warning("Not legal advice. This is a portfolio project and can be wrong. "
            "For a real dispute, contact the Fair Work Ombudsman on 13 13 94.", icon="⚠️")
 
-award = st.selectbox("Award", list(AWARDS), format_func=lambda a: f"{AWARDS[a]} [{a}]")
+award = st.selectbox("Award or agreement", list(AWARDS), format_func=lambda a: f"{AWARDS[a]} [{a}]")
 pack = load_pack(award, on=SUPPORTED_FROM)
 classification = st.selectbox(
     "Classification (your level)", list(pack.classifications),
@@ -37,11 +37,17 @@ classification = st.selectbox(
 employment = st.radio("Employment type", ["casual", "part_time", "full_time"], horizontal=True,
                       format_func=lambda e: e.replace("_", "-").capitalize())
 shiftworker = extended = False
+if pack.shiftwork is not None:
+    shiftworker = st.checkbox(
+        "My contract says I'm employed as a shiftworker (night shifts)",
+        help=f"{pack.title}, cl {pack.shiftwork.definition_clause}: shiftwork rates apply only to people employed "
+             "as shiftworkers, and their breaks are paid. If unsure, leave it unticked and read the warning below "
+             "the result.")
 if award == "MA000004":
-    shiftworker = st.checkbox("I was hired specifically to work night shifts (e.g. night fill)",
-                              help="Retail award cl 24-26: shiftwork rates; breaks are paid. "
-                                   "Tick only if you were hired as a shiftworker.")
     extended = st.checkbox("My store trades past 9pm on weekdays or 6pm on weekends")
+if pack.instrument_type == "enterprise_agreement":
+    st.info(f"{pack.title} applies instead of the award to the people it covers. If you're not employed as a "
+            "shiftworker, work after 11pm is overtime: 150% for the first 3 hours, then 200% (cl 4.2.3, 4.9.2).")
 st.checkbox("I am 21 or older", value=True, key="adult",
             help="Junior rates are not modelled, so results for under-21s would be wrong.")
 
@@ -117,7 +123,9 @@ if st.button("Check my pay", type="primary"):
     with st.expander("What this check does NOT cover"):
         st.markdown("\n".join(f"- {g}" for g in [
             *result.known_gaps,
-            "Enterprise agreements (e.g. Coles, Woolworths): if one covers you, these award rates may not apply.",
+            "Enterprise agreements other than Coles (e.g. Woolworths): if one covers you, award rates may not "
+            "apply." if result.award_id.startswith("MA") else
+            "Whether this agreement covers your role and store: check its coverage clause.",
             "Allowances, superannuation, tax and leave.",
             "States other than NSW (public holidays differ).",
         ]))

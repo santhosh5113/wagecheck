@@ -25,6 +25,7 @@ AWARDS = {
     "MA000003": "Fast Food Industry Award (takeaway, quick service)",
     "MA000119": "Restaurant Industry Award (restaurants, cafes)",
     "MA000009": "Hospitality Industry (General) Award (hotels, pubs, bars)",
+    "coles-retail-ea-2024": "Coles Retail Enterprise Agreement 2024 (Coles supermarkets)",
 }
 # The packs hold rates from 1 July 2026, and the NSW holiday list runs to June 2027.
 SUPPORTED_FROM = date(2026, 7, 1)
@@ -114,7 +115,7 @@ def rows_to_shifts(rows: list[dict[str, Any]]) -> list[ShiftInput]:
         brk = r.get("unpaid break (min)")
         try:
             shifts.append(ShiftInput(_as_date(r["date"]), parse_time(r["start"]), parse_time(r["finish"]),
-                                     0 if _blank(brk) else int(brk)))
+                                     0 if brk is None or _blank(brk) else int(brk)))
         except ValueError as e:
             raise ValueError(f"Shift row {n}: {e}") from e
     return shifts
@@ -179,9 +180,9 @@ def check_period(award_id: str, classification: str, employment_type: Employment
         outside = [r for r in results if any("span of hours" in c for li in r.lines for c in li.clauses)]
         if outside:
             days = ", ".join(f"{r.shift.start:%a %d %b}" for r in outside)
-            warnings.append(f"{days}: time outside ordinary hours is priced as overtime. If you were hired "
-                            "specifically to work nights (e.g. night fill), tick the night-shift box: shiftwork "
-                            "rates are lower than overtime, so this result may overstate what you're owed.")
+            warnings.append(f"{days}: time outside ordinary hours is priced as overtime. If your contract says "
+                            "you were employed as a shiftworker, tick the shiftworker box: shiftwork rates are "
+                            "lower than overtime, so this result may overstate what you're owed.")
     for r in results:
         warnings += [f"{r.shift.start:%a %d %b}: {n}" for n in r.notes]
     return PeriodCheck(award_id=award_id, award_title=pack.title, classification=classification,

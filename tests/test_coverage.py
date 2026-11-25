@@ -78,11 +78,11 @@ def test_award_named_on_payslip_wins():
 
 # ---- resolver ----
 
-def test_coles_resolves_to_agreement_needing_a_pack():
+def test_coles_resolves_to_its_agreement_pack():
     r = resolve(PayslipIdentity(abn=COLES_ABN, job_title="night fill", workplace_description="supermarket"))
     assert (r.instrument_type, r.instrument_id, r.confidence) == ("enterprise_agreement",
                                                                   "coles-retail-ea-2024", "high")
-    assert r.rate_source == "agreement_pack_needed"
+    assert r.rate_source == "agreement_pack"  # rules/packs/coles-retail-ea-2024_*.yaml
     assert r.requires_confirmation
 
 

@@ -1,0 +1,88 @@
+# Coles Retail Enterprise Agreement 2024 [AG2024/1124] — rule pack
+# Applies instead of the General Retail Industry Award to the team members it covers.
+# Rates take effect from the first full pay period after 1 July (cl 3.4.2); this pack uses the shift date.
+instrument_id: coles-retail-ea-2024
+instrument_type: enterprise_agreement
+title: Coles Retail Enterprise Agreement 2024
+effective_from: 2026-07-01
+verified_on: 2026-11-25
+timezone: Australia/Sydney
+sources:
+  - title: "Coles Retail Enterprise Agreement 2024, FWC matter AG2024/1124 (cl 2.2.4, 3.1.1, 3.3.1, 3.4, 4.2.3, 4.3, 4.5, 4.9)"
+    url: "https://www.fwc.gov.au/documents/agreement-applications/ag2024_1124.pdf"
+
+# Cl 3.1.1 base rates ($25.27-$28.31) are indexed by the % rise in the GRIA Level 1 rate each July
+# (cl 3.4.1): x1.0375 (2024) x1.035 (2025) x1.0475 (2026), unrounded. Level 1 gives $28.42417, which is
+# exactly the base rate on a Nov 2026 Coles payslip. Levels 2-6 use the same indexation (not yet seen on
+# a payslip). The agreement has six levels.
+classifications:
+  coles_level_1: {hourly: "28.42417", clause: "3.1.1/3.4.1"}
+  coles_level_2: {hourly: "29.11031", clause: "3.1.1/3.4.1"}
+  coles_level_3: {hourly: "29.56023", clause: "3.1.1/3.4.1"}
+  coles_level_4: {hourly: "30.14514", clause: "3.1.1/3.4.1"}
+  coles_level_5: {hourly: "31.37119", clause: "3.1.1/3.4.1"}
+  coles_level_6: {hourly: "31.84361", clause: "3.1.1/3.4.1"}
+
+casual_loading_pct: 25
+casual_loading_clause: "2.2.4(b)"
+
+min_engagement:
+  casual_hours: 3
+  casual_clause: "4.3.5(a)"
+  part_time_hours: 3
+  part_time_clause: "4.3.4(b)"
+
+# Cl 4.2.3(a) spread of ordinary hours (other than shiftworkers). There is no extended-trading
+# extension, so extended_trading_end equals the weekday end.
+span:
+  clause: "4.2.3"
+  weekday: {start: "07:00", end: "23:00"}
+  saturday: {start: "07:00", end: "23:00"}
+  sunday: {start: "09:00", end: "23:00"}
+  extended_trading_end: "23:00"
+  extended_trading_clause: "4.2.3"
+
+# Cl 3.3.1 penalties for ordinary hours (non-shiftworkers). Casual column includes casual loading.
+ordinary: {ft_pt: 100, casual: 125, clause: "3.1.1/2.2.4(b)"}
+time_bands:
+  - {name: public_holiday, days: [public_holiday], rate: {ft_pt: 225, casual: 250, clause: "3.3.1"}}
+  - {name: sunday, days: [sunday], rate: {ft_pt: 150, casual: 175, clause: "3.3.1"}}
+  - {name: saturday, days: [saturday], rate: {ft_pt: 125, casual: 150, clause: "3.3.1"}}
+  - {name: weekday_evening, days: [weekday], start: "18:00", end: "23:00",
+     rate: {ft_pt: 125, casual: 150, clause: "3.3.1"}}
+
+# Cl 4.5 shiftwork: only for team members specifically employed as shiftworkers (cl 4.5.1).
+# A shift starting at or after 6pm and before 5am the next day (cl 4.5.3(a)), unless it starts and
+# finishes on the same day inside the spread (cl 4.5.3(b)). Breaks are paid (cl 4.5.5).
+shiftwork:
+  definition_clause: "4.5.3(a)"
+  same_day_exclusion_clause: "4.5.3(b)"
+  window_start: "18:00"
+  window_end: "05:00"
+  weekday: {ft_pt: 130, casual: 155, clause: "4.5.4(b)"}
+  saturday: {ft_pt: 150, casual: 175, clause: "4.5.4(c)"}
+  sunday: {ft_pt: 175, casual: 200, clause: "4.5.4(d)"}
+  public_holiday: {ft_pt: 225, casual: 250, clause: "4.5.4(e) -> 3.3.1"}
+  paid_breaks_clause: "4.5.5"
+
+# Cl 4.9: overtime for hours outside the spread (non-shiftworkers) or over 9 ordinary hours a day
+# (11 on one day a week, cl 4.3). "Calculated on a daily basis" (cl 4.9.2(d)); the first-3-hours count
+# runs across the shift, which is how Coles pays it (checked against real payslips: 200% from 2am
+# after an 11pm start of overtime).
+overtime:
+  trigger_clause: "4.9.2(a)"
+  daily_max_hours: 9
+  long_day_max_hours: 11
+  first_hours: 3
+  mon_sat_first: {ft_pt: 150, casual: 175, clause: "4.9.2(c)/4.9.3(b)"}
+  mon_sat_after: {ft_pt: 200, casual: 225, clause: "4.9.2(c)/4.9.3(b)"}
+  sunday: {ft_pt: 200, casual: 225, clause: "4.9.2(c)/4.9.3(b)"}
+  public_holiday: {ft_pt: 250, casual: 275, clause: "4.9.2(c)/4.9.3(b)"}
+
+known_gaps:
+  - "Levels 2-6 base rates are derived by the cl 3.4.1 indexation; only Level 1 has been seen on a payslip."
+  - "Junior rates (A3.3), apprentices (A3.5), baking production shiftwork (A3.4) not modelled."
+  - "Weekly overtime (over 38 ordinary hours) not modelled; daily triggers only."
+  - "Allowances (A4) not modelled."
+  - "Rates are rounded to the cent per hour; Coles payroll keeps 5 decimals, so lines can differ by a few cents."
+  - "Coverage: check the agreement's coverage clause; some roles and stores are excluded."

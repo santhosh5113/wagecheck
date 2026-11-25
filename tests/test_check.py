@@ -54,17 +54,17 @@ def test_part_time_over_38_hours_a_week_is_flagged():
 
 def test_night_shift_without_shiftwork_box_warns_about_overtime():
     plain = check_period("MA000004", "retail_employee_level_1", "casual", [night(20)], Decimal(0))
-    assert any("tick the night-shift box" in w for w in plain.warnings)
+    assert any("tick the shiftworker box" in w for w in plain.warnings)
     shiftwork = check_period("MA000004", "retail_employee_level_1", "casual", [night(20)], Decimal(0),
                              shiftworker=True)
-    assert not any("tick the night-shift box" in w for w in shiftwork.warnings)
+    assert not any("tick the shiftworker box" in w for w in shiftwork.warnings)
     assert shiftwork.owed < plain.owed
 
 
 def test_day_shifts_get_no_overtime_warning():
     day = ShiftInput(date(2026, 10, 20), time(9), time(17), break_minutes=30)
     c = check_period("MA000004", "retail_employee_level_1", "casual", [day], Decimal(0))
-    assert not any("night-shift box" in w for w in c.warnings)
+    assert not any("shiftworker box" in w for w in c.warnings)
 
 
 @pytest.mark.parametrize("typed, expected", [

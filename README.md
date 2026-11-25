@@ -44,13 +44,14 @@ All arithmetic happens in `engine/` with `Decimal`, from a rule pack that cites 
 | 4 | Award clause RAG, retrieval accuracy | — |
 | 5 | Discrepancy + recurring-pattern detection, precision/recall | — |
 | v1 app | Streamlit app: shifts + gross pay → award minimum per shift, verdict, CSV; deployed on Streamlit Community Cloud | ✅ |
+| v1.1 | First enterprise agreement: Coles Retail EA 2024 rule pack, checked against real payslips; in the app | ✅ |
 | 6 | Explanation reports, payslip upload in the app, end-to-end dollar error | — |
 
 ## Phase 1: rules core
 
 ```bash
 pip install -e ".[dev]"
-pytest            # 198 tests incl. Hypothesis property tests
+pytest            # 216 tests incl. Hypothesis property tests
 ruff check . && mypy src
 python scripts/demo_calc.py
 ```
@@ -282,6 +283,26 @@ Two bugs the evaluation caught, both fixed:
 
 The cache stores the model's raw output and re-parses it on every run, so a parser fix is re-scored in
 seconds without re-running the model.
+
+## Enterprise agreements: Coles Retail EA 2024
+
+An approved enterprise agreement replaces the award for the people it covers, so a Coles worker checked
+against the Retail award gets the wrong answer. `rules/packs/coles-retail-ea-2024_2026-07-01.yaml` encodes
+AG2024/1124 in the same format as the award packs, and the coverage resolver now routes Coles payslips to it.
+
+| Rule | Clause | Pack |
+|---|---|---|
+| Base rate | 3.1.1 ($25.27 L1), indexed each July by the award Level 1 rise (3.4.1) | L1 $28.42417 from July 2026 |
+| Evening Mon–Fri 6–11pm | 3.3.1 | 125% (casual 150%) |
+| Outside 7am–11pm (non-shiftworkers) | 4.2.3, 4.9.2 | Overtime: 150% for 3 hours, then 200% |
+| Shiftworkers (employed as such) | 4.5 | 130% weeknights, breaks paid |
+
+**Validated on real payslips.** Four weeks of real night-fill payslips (kept out of the repo) were run through
+the engine from the worker's rostered times. The indexed base rate equals the payslip rate to five decimals,
+and the engine reproduces Coles payroll's split of hours across 125%, 150% and 200% in every week, including a
+detail the agreement leaves open: the first-three-hours overtime count runs across midnight, and Sunday-night
+overtime uses it up. Remaining differences were half-hours where the roster and the paid hours disagreed,
+which need clock-in records, not rules, to settle. The tests use made-up shifts that exercise the same rules.
 
 ## v1 web app
 
