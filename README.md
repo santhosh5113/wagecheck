@@ -2,9 +2,12 @@
 
 **▶ Live app: [wagecheck.streamlit.app](https://wagecheck.streamlit.app)** (no login; nothing you enter is stored)
 
-- Enter your shifts and gross pay; get the legal minimum under your award or the Coles enterprise agreement.
-- A deterministic rules engine prices every minute from verified rates; no LLM does the arithmetic.
-- It shows the gap between paid and owed, shift by shift, with the clause behind each rate.
+- **LLM extraction:** reads payslip PDFs and phone photos into structured data, using a local Qwen 2.5 7B or the
+  Claude API behind one switch (1.000 pay-line F1 on synthetic payslips).
+- **Rules engine:** prices every minute of every shift from verified award and agreement rates; the LLM never
+  does arithmetic.
+- **Result:** the gap between paid and owed, shift by shift, citing the award or agreement clause for each line.
+  The live app takes typed shifts for now; payslip upload is next.
 
 <p align="center"><img src="docs/screenshot.png" width="620"
   alt="WageCheck result for a Coles night shift, 22:00 to 03:30: 1 hour at 125%, 3 hours of overtime at 150%, 1.5 hours at 200%; $248.73 owed against $220.00 paid, $28.73 short"></p>
