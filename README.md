@@ -1,11 +1,16 @@
 # WageCheck
 
-Checks whether casual and part-time workers in Australia were paid what their Modern Award requires,
-shift by shift, and explains each gap with the exact clause.
+**▶ Live app: [wagecheck.streamlit.app](https://wagecheck.streamlit.app)** (no login; nothing you enter is stored)
 
-**Try it:** **[wagecheck.streamlit.app](https://wagecheck.streamlit.app)**. Enter your shifts and gross pay for one pay period and see the
-award minimum, shift by shift, with clause references. Adults, NSW, Retail / Fast Food / Restaurant /
-Hospitality awards, shifts from 1 July 2026 to 30 June 2027. Nothing you enter is stored.
+- Enter your shifts and gross pay; get the legal minimum under your award or the Coles enterprise agreement.
+- A deterministic rules engine prices every minute from verified rates; no LLM does the arithmetic.
+- It shows the gap between paid and owed, shift by shift, with the clause behind each rate.
+
+<p align="center"><img src="docs/screenshot.png" width="620"
+  alt="WageCheck result for a Coles night shift, 22:00 to 03:30: 1 hour at 125%, 3 hours of overtime at 150%, 1.5 hours at 200%; $248.73 owed against $220.00 paid, $28.73 short"></p>
+
+Covers adults in NSW under the Retail, Fast Food, Restaurant and Hospitality awards and the Coles Retail
+Enterprise Agreement 2024, for shifts from 1 July 2026 to 30 June 2027.
 
 > **Not legal advice.** WageCheck flags possible discrepancies. For a real dispute, contact the
 > [Fair Work Ombudsman](https://www.fairwork.gov.au) (13 13 94) or your union.
