@@ -2,8 +2,9 @@
 
 **▶ Live app: [wagecheck.streamlit.app](https://wagecheck.streamlit.app)** (no login; nothing you enter is stored)
 
-- **LLM extraction:** reads payslip PDFs and phone photos into structured data, using a local Qwen 2.5 7B or the
-  Claude API behind one switch (1.000 pay-line F1 on synthetic payslips).
+- **LLM extraction:** reads payslip PDFs and scanned images into structured data, using a local Qwen 2.5 7B or the
+  Claude API behind one switch. On 30 synthetic payslips (110 pay lines, each read from the PDF and from a
+  degraded scan) it got every pay line right; [limits of that test](#limits-of-this-evaluation).
 - **Rules engine:** prices every minute of every shift from verified award and agreement rates; the LLM never
   does arithmetic.
 - **Result:** the gap between paid and owed, shift by shift, citing the award or agreement clause for each line.
@@ -291,6 +292,19 @@ Two bugs the evaluation caught, both fixed:
 
 The cache stores the model's raw output and re-parses it on every run, so a parser fix is re-scored in
 seconds without re-running the model.
+
+### Limits of this evaluation
+
+| Limit | What it means |
+|---|---|
+| **Small** | 30 payslips, 110 pay lines (1 to 6 per payslip). Zero errors in 110 lines is still consistent with a true line-error rate of up to about 3% (rule of three, 95%). |
+| **One generator** | Every payslip comes from the same code: 3 styles, 2 layouts, one page, clean fonts. Real payslips with multi-page tables, year-to-date columns, leave and allowance lines, or unusual pay codes are not represented. Accuracy on real payslips is **not measured yet**. |
+| **Simulated scans** | Scans are degraded by code (tilt, blur, noise, JPEG). Real phone photos add glare, folds and perspective. |
+| **Partly a dev set** | The two date fixes above were made after looking at failures on this same set, so header F1 0.985 is a development score. The pay-line score was not affected by those fixes. |
+| **Where it breaks** | When OCR drops a digit (`$178.5`), the model correctly refuses to guess, so the field is wrong. Exact-payslip rate on held-out-layout scans is 29% (2 of 7). |
+
+Next honest test: a fresh seed and a third layout the prompt has never seen, then a small set of real,
+consented, anonymised payslips.
 
 ## Enterprise agreements: Coles Retail EA 2024
 
